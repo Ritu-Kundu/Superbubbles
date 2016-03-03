@@ -1,0 +1,5 @@
+Vertices: 4
+Edges: 6
+Elapsed time for processing: 0.000138998 secs.
+Number of superbubbles found: 1.
+<0,3>

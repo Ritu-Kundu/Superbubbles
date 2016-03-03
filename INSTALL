@@ -1,0 +1,26 @@
+Pre-installation Instructions
+=============================
+
+   This installation requires the pre-installation of the cmake tool,
+   a C++11 ready compiler such as g++ version 4.7, and the libraries: 
+   libdivsufsort and sdsl.
+
+For Linux, you can install libraries libdivsufsort and sdsl via
+
+ $ ./pre-install.sh 
+
+
+Basic Instructions
+==================
+
+   The shell command `make -f Makefile.32-bit.gcc' should compile this 
+program for 32-bit integers. 
+   
+   The shell command `make -f Makefile.64-bit.gcc' should compile this 
+program for 64-bit integers. This requires double the amount of memory.
+
+After compilation the binary `supbub' will be created in the working 
+directory, e.g. you may call it from this directory via
+
+ S ./supbub -i ./data/sample.txt -o ./result/sampleOutput.txt
+
