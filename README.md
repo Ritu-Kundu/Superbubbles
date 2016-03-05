@@ -4,7 +4,7 @@ SUPBUB : SuperBubbles
 SUPBUB is a tool that finds out superbubbles in a directed graph.
 Detection method in a DAG is based on the algorithm described in the paper titled
 [**Linear-time superbubble identification algorithm**](http://www.sciencedirect.com/science/article/pii/S0304397515009147)
-by Ljiljana Brankovica, Costas S. Iliopoulos, Ritu Kundu, Manal Mohamed, Solon P. Pissis, Fatima Vayani
+by Ljiljana Brankovic, Costas S. Iliopoulos, Ritu Kundu, Manal Mohamed, Solon P. Pissis, Fatima Vayani
 
 To compile SUPBUB, please follow the instructions given in file INSTALL.
 
