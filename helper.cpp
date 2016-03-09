@@ -44,8 +44,9 @@ namespace supbub{
       case 'i':
 	{
 	  std::string inFile(optarg);
-	  flags->input_filename = new char[inFile.size() + 1];
+	  flags->input_filename = new char[inFile.size()+1];
 	  inFile.copy(flags->input_filename, inFile.size());
+	  flags->input_filename[inFile.size()] = '\0';
 	  args ++;
 	  break;
 	}
@@ -53,8 +54,9 @@ namespace supbub{
       case 'o':
 	{
 	  std::string outFile(optarg);
-	  flags->output_filename = new char[outFile.size() + 1];
+	  flags->output_filename = new char[outFile.size()+1];
 	  outFile.copy(flags->output_filename, outFile.size());
+	  flags->output_filename[outFile.size()] = '\0';
 	  args ++;
 	  break;
 	}
