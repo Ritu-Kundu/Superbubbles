@@ -18,14 +18,13 @@
 
 #ifndef CANDIDATELIST_HPP
 #define CANDIDATELIST_HPP
-
-#include "globalDefs.hpp"
+#include <stdint.h>
 
 namespace supbub{
 
 /** type for a candidate */
 struct Candidate{
-  INT vertexId; // int representing the vertex
+  int64_t vertexId; // int representing the vertex
   bool isEntrance;  // true if its an entrance, false otherwise
 
   /** pointer to previous entrance candidate in the list wrt this candidate if it's an exit candidate. For an entrance candidate, it is null.
@@ -62,7 +61,7 @@ struct Candidate{
      * @param isEntrance // true if its an entrance, false otherwise
      * @param pvsEntrance pointer to previous entrance candidate in the list wrt this candidate if it's an exit candidate. For an entrance candidate, it is null.
      */
-    Candidate* insert(INT ver, bool isEntrance, Candidate* pvsEntrance); 
+    Candidate* insert(int64_t ver, bool isEntrance, Candidate* pvsEntrance); 
 
     /** Returns a pointer to the candidate at the tail of the list. */
     Candidate* tail();

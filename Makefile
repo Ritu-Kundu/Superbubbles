@@ -1,16 +1,15 @@
 MF=Makefile
-SDSL_DIR=./sdsl-lite
  
-CC=g++
+CXX=g++
  
-CFLAGS= -g -D_USE_32 -msse3 -fopenmp -O3 -fomit-frame-pointer -funroll-loops 
+CXXFLAGS= -msse3 -g -D_USE_32 -std=c++11 -fopenmp -O3 -fomit-frame-pointer -funroll-loops 
  
-LFLAGS= -std=c++11 -O3 -DNDEBUG -I $(SDSL_DIR)/include/ -lsdsl ##-Wl,-rpath $(PWD)/sdsl-lite/lib -L $(SDSL_DIR)/lib/
+LFLAGS= -I. -L. -lsupbub -lsdsl
 
 LIB=libsupbub.a
 EXE=supbub
 SRC=supbub.cpp Graph.cpp DetectSuperBubble.cpp Subgraph.cpp DAG.cpp CandidateList.cpp helper.cpp
-HD=globalDefs.hpp Graph.hpp DetectSuperBubble.hpp Subgraph.hpp DAG.hpp CandidateList.hpp helperDefs.hpp Makefile
+HD=Graph.hpp DetectSuperBubble.hpp Subgraph.hpp DAG.hpp CandidateList.hpp helperDefs.hpp Makefile
 OBJ=$(SRC:.cpp=.o)
  
 # 
@@ -23,17 +22,32 @@ OBJ=$(SRC:.cpp=.o)
  
 all: $(LIB) $(EXE)
  
-.cpp.o: 
-	$(CC) $(CFLAGS)-c $(LFLAGS) $< 
+DetectSuperBubble.o: DetectSuperBubble.cpp DetectSuperBubble.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-$(LIB): $(OBJ) 
-	ar -rs $@ $(OBJ)
+Subgraph.o: Subgraph.cpp Subgraph.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-$(SDSL_DIR)/lib/libsdsl.a:
-	+cd $(SDSL_DIR) && ./install.sh `pwd`
+DAG.o: DAG.cpp DAG.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-$(EXE): $(OBJ)
-	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LFLAGS) 
+CandidateList.o: CandidateList.cpp CandidateList.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+helper.o: helper.cpp helperDefs.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+Graph.o: Graph.cpp Graph.hpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+supbub.o: supbub.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+$(LIB): DetectSuperBubble.o Subgraph.o DAG.o CandidateList.o helper.o Graph.o
+	ar -rs $@ $^
+
+$(EXE): $(LIB) $(OBJ)
+	$(CXX) $(CXXFLAGS) -o $@ supbub.o $(LFLAGS)
 
 $(OBJ): $(MF) $(HD)
 

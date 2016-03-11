@@ -92,12 +92,12 @@ namespace supbub{
   }
 
   
-  void log(std::string s, INT x){
+  void log(std::string s, int64_t x){
     std::cerr << s << x << std::endl;
   }
 
   
-  void log(std::string s, INT x, INT y){
+  void log(std::string s, int64_t x, int64_t y){
     std::cerr << s << x << " " << y << std::endl;
   }
 } // end namespace

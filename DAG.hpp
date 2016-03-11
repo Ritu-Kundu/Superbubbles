@@ -66,12 +66,12 @@ namespace supbub{
     /** array of topological order of vertices
      * ordD[x] = y => vertex with id=x has y as topological order
      */
-    INT* ordD;
+    int64_t* ordD;
 
     /** Constructor
      * @param n total number of vertices
      */
-    DAG(INT n); 
+    DAG(int64_t n); 
 
     /** Destructor */ 
     ~DAG();
@@ -112,15 +112,15 @@ namespace supbub{
 
     /** Returns the vertex having the given topological order.
      */
-    VERTEXID vertexAtOrder(INT o);
+    VERTEXID vertexAtOrder(int64_t o);
 
     /** Returns the maximum OutChild in the given range .
      */
-    INT rangeMaxOutChild(INT start, INT end);
+    int64_t rangeMaxOutChild(int64_t start, int64_t end);
 
     /** Returns the minimum OutParent in the given range .
      */
-    INT rangeMinOutParent(INT start, INT end);
+    int64_t rangeMinOutParent(int64_t start, int64_t end);
 
  
     //////////////////////// private ////////////////////////
@@ -137,7 +137,7 @@ namespace supbub{
      *                        order of furthest(in topo order) parent
      */
 
-    INT* outParent;
+    int64_t* outParent;
 
     /** array of outChild
      * OutChild[ordD[v]] = ordD[u1 ] such that
@@ -145,7 +145,7 @@ namespace supbub{
      *                        order of furthest(in topo order) child
      */
 
-    INT* outChild;
+    int64_t* outChild;
 
 
     /** array of pointer to previous entrance candidate, in the candidate list, for each vertex

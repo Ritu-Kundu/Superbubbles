@@ -31,7 +31,7 @@ namespace supbub{
   }
 
   Candidate* 
-  CandidateList::insert(INT ver, bool isEntrance, Candidate* pvsEntrance){
+  CandidateList::insert(int64_t ver, bool isEntrance, Candidate* pvsEntrance){
     Candidate* newCand = new Candidate{ver, isEntrance, pvsEntrance, nullptr, _tail};
 
     // if it's not the first node, set tail to it

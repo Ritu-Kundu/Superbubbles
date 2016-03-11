@@ -19,8 +19,14 @@
 
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
+#include <cstdint>
+#include <stdio.h>
+#include <iterator>
+#include <list>
+#include <stack>
+#include <string>
+#include <iostream>
 
-#include "globalDefs.hpp"
 #include "helperDefs.hpp"
 
 namespace supbub{
@@ -41,7 +47,7 @@ namespace supbub{
    */
 
    /** type for vertex */
-    typedef INT VERTEXID;
+    typedef int64_t VERTEXID;
 
     
     /** type for list of ids of vertices */
@@ -59,16 +65,16 @@ namespace supbub{
     /** Constructor
      * @param n total number of vertices
      */
-    Graph(INT n); 
+    Graph(int64_t n); 
 
     /** Destructor */ 
     ~Graph();
 
     /** Gives the number of vertices of graph. */
-    INT numVertices();
+    int64_t numVertices();
 
     /** Gives the number of vertices of graph. */
-    INT numEdges();
+    int64_t numEdges();
 
     /** Returns list of children of the vertex.
      * Assumes v is valid.
@@ -87,11 +93,11 @@ namespace supbub{
 
     /** Returns indegree of the vertex with given vertex-id (if v exists, -1 otherwise).
      */
-    INT getInDegree(VERTEXID v);
+    int64_t getInDegree(VERTEXID v);
 
     /** Returns outdegree of the vertex with given vertex-id (if v exists, -1 otherwise).
      */
-    INT getOutDegree(VERTEXID v);
+    int64_t getOutDegree(VERTEXID v);
 
 
 
@@ -110,7 +116,7 @@ namespace supbub{
      * @param scc Pointer to the array to be filled in with subgraph-id of each vertex.
      * @return number of subgraphs(one corresponding to all vertices in singleton sccs and rest corresponding to each of the non-singleton scc) .     
      */
-     INT fillSCC(INT* scc);
+     int64_t fillSCC(int64_t* scc);
 
     /* Prints the graph in the form of adjacency list 
      */
@@ -120,10 +126,10 @@ namespace supbub{
     //////////////////////// protected ////////////////////////
   protected:
     /** total number of vertices in the graph */
-    INT _numVertices;
+    int64_t _numVertices;
 
     /** total number of edges in the graph */
-    INT _numEdges;
+    int64_t _numEdges;
 
     /** adjacency list
      *  it is the pointer to an array where an element at index say 'u' is a pointer to a list of ids 'v' of all vertices such that there is an edge from the vertex with id u to the vertex with id v.
@@ -138,12 +144,12 @@ namespace supbub{
     /** array of indegree of each vertex
      *  it is the pointer to an array where an element at index say 'u' containes n where n is indegree of the vertexwith id  u.
      */
-    INT* _inDegree;
+    int64_t* _inDegree;
 
     /** array of outdegree of each vertex
      *  it is the pointer to an array where an element at index say 'u' containes n where n is outdegree of the vertex with id u.
      */
-    INT* _outDegree;
+    int64_t* _outDegree;
  
     //////////////////////// private ////////////////////////
   private:
@@ -162,8 +168,8 @@ namespace supbub{
      */
 
     void 
-    findScc(INT u, INT* disc, INT* low, std::stack<int> *st,
-	bool* stacked, INT& tick, INT& currentScc, INT* scc);
+    findScc(int64_t u, int64_t* disc, int64_t* low, std::stack<int64_t> *st,
+	bool* stacked, int64_t& tick, int64_t& currentScc, int64_t* scc);
  
   };
 

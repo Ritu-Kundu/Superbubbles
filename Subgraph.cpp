@@ -19,9 +19,9 @@
 
 namespace supbub{
 
-  Subgraph::Subgraph(INT n):Graph(n) {
+  Subgraph::Subgraph(int64_t n):Graph(n) {
     //super();
-    _reverseMapId = new INT[_numVertices];
+    _reverseMapId = new int64_t[_numVertices];
     std::fill_n(_reverseMapId, _numVertices, -1); // set to -1
     _offSet = n-2;
     _dag = nullptr;
@@ -113,7 +113,7 @@ namespace supbub{
     }
   }
 
-  INT Subgraph::getOffset(){
+  int64_t Subgraph::getOffset(){
     return _offSet;
   }
 
@@ -121,8 +121,8 @@ namespace supbub{
   DAG*
   Subgraph::getDAG(){
     _dag = new DAG(2*_offSet + 2);
-    _discovery = new INT[_numVertices];
-    _finish = new INT[_numVertices];
+    _discovery = new int64_t[_numVertices];
+    _finish = new int64_t[_numVertices];
     VERTEXID_LIST_ITERATOR i;
     VERTEXID newSource = _dag->getSourceId();
     VERTEXID thisSource = getSourceId();
@@ -184,7 +184,7 @@ namespace supbub{
 
 
   void
-  Subgraph::DFSVisit(VERTEXID u, INT tick, Subgraph::Color* color){
+  Subgraph::DFSVisit(VERTEXID u, int64_t tick, Subgraph::Color* color){
     color[u] = GRAY;
     _discovery[u] = ++tick;
     VERTEXID_LIST_ITERATOR i;

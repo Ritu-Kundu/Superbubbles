@@ -18,9 +18,15 @@
 
 #include <sys/time.h>
 #include <getopt.h>
+#include <cstdint>
+#include <stdio.h>
+#include <iterator>
+#include <list>
+#include <stack>
+#include <string>
+#include <iostream>
 
 
-#include "globalDefs.hpp"
 
 namespace supbub{
 struct InputFlags{
@@ -33,9 +39,9 @@ void usage (void);
 int decodeFlags(int argc, char* argv [], struct InputFlags* flags);
 double gettime(void);
 
-void log(std::string s, INT x);
+void log(std::string s, int64_t x);
 
-void log(std::string s, INT x, INT y);
+void log(std::string s, int64_t x, int64_t y);
 
 } // end namespace
 

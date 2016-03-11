@@ -71,7 +71,7 @@ namespace supbub{
     /** Constructor
      * @param n total number of vertices
      */
-    Subgraph(INT n); 
+    Subgraph(int64_t n); 
 
     /** Destructor */ 
     ~Subgraph();
@@ -138,7 +138,7 @@ namespace supbub{
 
     /** Returns offset of this subgraph.
      */
-    INT getOffset();
+    int64_t getOffset();
 
     /** Returns a pointer to the underlying DAG of this subgraph. 
      * Follows GraphToDAG method described in the paper.
@@ -152,7 +152,7 @@ namespace supbub{
   private:
 
     /** Pointer to the array mapping subgraph's(G) vertex id (local) to graph's(H) vertex id (global). */
-    INT* _reverseMapId;
+    int64_t* _reverseMapId;
 
     /** Integer representing the offset between a vertex's local-id and its duplicate vetex's local-id in this subgraph's underlying DAG i.e. G'.
      *
@@ -161,15 +161,15 @@ namespace supbub{
      *    -- (size -2) because last and second-last correspond to sink and source resp.  
      * -- used for duplicating nodes while obtaining the DAG of this subgraph 
      */
-    INT _offSet;
+    int64_t _offSet;
 
     DAG* _dag;
 
     /** Pointer to the array mapping subgraph's(G) vertices to their discovery time in DFS traversal. */
-    INT* _discovery;
+    int64_t* _discovery;
 
     /** Pointer to the array mapping subgraph's(G) vertices to their finishing time in DFS traversal. */
-    INT* _finish;
+    int64_t* _finish;
 
     /** enum for vertex-color used in case of DFS to identify back-edges*/
     enum Color { WHITE, GRAY, BLACK };
@@ -180,7 +180,7 @@ namespace supbub{
      * @param color Pointer to an array marking colors of the vertices to keep track of unvisited(WHITE), visited but not finished(GRAY) and finished(BLACK) vertices.
      *
      */   
-    void DFSVisit(VERTEXID u, INT tick, Color* color);
+    void DFSVisit(VERTEXID u, int64_t tick, Color* color);
   
 
  

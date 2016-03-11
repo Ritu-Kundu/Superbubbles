@@ -21,19 +21,19 @@ namespace supbub {
 
   void 
   DetectSuperBubble::find(Graph& g, SUPERBUBBLE_LIST& superBubblesList){
-    INT numVertices = g.numVertices();
+    int64_t numVertices = g.numVertices();
 
     /*******************************STAGE 1***************************************/
 
     /* Find scc (all singleton-vertices seen as scc with id zero, non-singleton starts from 1) */
-    INT* scc = new INT[numVertices];
-    INT numSubgraphs = g.fillSCC(scc);
+    int64_t* scc = new int64_t[numVertices];
+    int64_t numSubgraphs = g.fillSCC(scc);
 
     /* Preprocess before partitioning */
     std::vector<Subgraph*> subgraphs;
-    INT* globalToLocalIdMap = new VERTEXID[numVertices]; // Keep track of local-ids given to vertices in each subgraph
+    int64_t* globalToLocalIdMap = new VERTEXID[numVertices]; // Keep track of local-ids given to vertices in each subgraph
     
-    INT* sizeSubgraph = new INT[numSubgraphs]; // Keep track of size of each subgraph 
+    int64_t* sizeSubgraph = new int64_t[numSubgraphs]; // Keep track of size of each subgraph 
     std::fill_n(sizeSubgraph, numSubgraphs, 0); // set to 0
    
     // Calculate size of ssc/subgraphs, providing local-id to each vertex in that subgraph
@@ -42,7 +42,7 @@ namespace supbub {
     }
 
     // Create new subgraphs of size just calculated (+ two extra vertices as r and r')
-    for(INT sg=0; sg < numSubgraphs; ++sg) {
+    for(int64_t sg=0; sg < numSubgraphs; ++sg) {
       subgraphs.push_back(new Subgraph(sizeSubgraph[sg] +2)); // two additional vetices for r(source) and r'(terminal/sink) resp.
 
     }
@@ -57,7 +57,7 @@ namespace supbub {
       if (! children.empty()) { // out-degree non-zero
 	isOutOtherScc = false;
 	for (i = children.begin(); i != children.end(); ++i) {
-	  INT u = *i;
+	  int64_t u = *i;
 	  if (scc[v] == scc[u]){ // same scc
 	    sg->addEdge(globalToLocalIdMap[v], globalToLocalIdMap[u]); // add edge v-u
 	  }
@@ -75,7 +75,7 @@ namespace supbub {
       VERTEXID_LIST& parents = g.getParents(v);
       if (! parents.empty()) {
 	for (i = parents.begin(); i != parents.end(); ++i) {
-	  INT u = *i;
+	  int64_t u = *i;
 	  if (scc[v] != scc[u]){ // different scc
 	    sg->addEdge(sg->getSourceId(), globalToLocalIdMap[v]); // add edge r-v
 	    break;
@@ -96,7 +96,7 @@ namespace supbub {
     /* Obtain superbubble for acyclic */
     // Subgraph with id 0(corresponding to singletons) is already a Directed Acyclic Graph. Duplicate its edges into a DAG.
     Subgraph* sg0 = subgraphs[0];
-    INT DAGSize = sg0->numVertices();
+    int64_t DAGSize = sg0->numVertices();
     DAG* dag0 = new DAG(DAGSize);
 
     for (VERTEXID v = 0; v < DAGSize; ++v) {
@@ -130,7 +130,7 @@ namespace supbub {
     
     
     /* Detect superbubbles after changing cyclic G to acyclic G' */
-    for(INT i=1; i < numSubgraphs; ++i) {
+    for(int64_t i=1; i < numSubgraphs; ++i) {
       Subgraph* sg = subgraphs[i];
       DAG* dag = sg->getDAG();
 
@@ -182,7 +182,7 @@ namespace supbub {
      * It allows to avoid checking the same path of entrance 
      * candidates repeatedly 
      */
-    INT* mark = new INT[dag->numVertices()];
+    int64_t* mark = new int64_t[dag->numVertices()];
     std::fill_n(mark,dag->numVertices(), 0); // set to 0
     
     dag->prepareForSupBub();
@@ -200,7 +200,7 @@ namespace supbub {
  
 
   void 
-  DetectSuperBubble::reportSuperBubble(DAG* dag, INT* mark, Candidate* start, Candidate* exit, VERTEXID* superBubblesArray){
+  DetectSuperBubble::reportSuperBubble(DAG* dag, int64_t* mark, Candidate* start, Candidate* exit, VERTEXID* superBubblesArray){
     // sanity check
     if (start == nullptr || exit == nullptr || dag->ordD[start->vertexId] >= dag->ordD[exit->vertexId]){ 
       dag->candidates.delete_tail();
@@ -218,7 +218,7 @@ namespace supbub {
       s = valid;
     }
 
-    INT exitVer = exit->vertexId;
+    int64_t exitVer = exit->vertexId;
     dag->candidates.delete_tail(); 
 
     if (valid == s) {  // superbubble found
@@ -242,10 +242,10 @@ namespace supbub {
   Candidate*
   DetectSuperBubble::validateSuperBubble(DAG* dag, Candidate* startCand, 
 					 Candidate* endCand){
-    INT start = dag->ordD[startCand->vertexId];
-    INT end = dag->ordD[endCand->vertexId];
-    INT outChild = dag->rangeMaxOutChild(start, end-1);
-    INT outParent = dag->rangeMinOutParent(start+1, end);
+    int64_t start = dag->ordD[startCand->vertexId];
+    int64_t end = dag->ordD[endCand->vertexId];
+    int64_t outChild = dag->rangeMaxOutChild(start, end-1);
+    int64_t outParent = dag->rangeMinOutParent(start+1, end);
    
     if (outChild != end){
       log("returning null for : ", startCand->vertexId, endCand->vertexId);

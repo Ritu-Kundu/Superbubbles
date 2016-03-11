@@ -20,7 +20,7 @@
 
 namespace supbub{
 
-  DAG::DAG(INT n): Graph(n), candidates() {
+  DAG::DAG(int64_t n): Graph(n), candidates() {
     //super();
     // Following will be prepared by prepareForSupBub() 
     ordD = nullptr;
@@ -56,12 +56,12 @@ namespace supbub{
     }
   }
 
-  INT
+  int64_t
   DAG::getSourceId(){
     return _numVertices-2; // second last vertex
   }
 
-  INT
+  int64_t
   DAG::getTerminalId(){
     return _numVertices-1; // last vertex
   }
@@ -74,8 +74,8 @@ namespace supbub{
     fillTopologicalOrder();
 
     /* Compute ordD */
-    ordD = new INT[_numVertices];
-    for (INT ord = 0; ord < _numVertices; ++ord) {
+    ordD = new int64_t[_numVertices];
+    for (int64_t ord = 0; ord < _numVertices; ++ord) {
       ordD[invOrd[ord]] = ord; 
     }
 
@@ -84,14 +84,14 @@ namespace supbub{
     prepareCandListNPvsEntrance();
 
     /* Compute outParent and outChild and prepare for RMQ */
-    outParent = new INT[_numVertices];
-    outChild = new INT[_numVertices];
+    outParent = new int64_t[_numVertices];
+    outChild = new int64_t[_numVertices];
     prepareOutParNOutChildRMQ();
 
   }
 
   Candidate*
-  DAG::previousEntrance(INT v){
+  DAG::previousEntrance(int64_t v){
     if (v < _numVertices && v >= 0)  {
       return pvsEntrance[v];
     } else {
@@ -101,7 +101,7 @@ namespace supbub{
   }
 
   VERTEXID
-  DAG::vertexAtOrder(INT o){
+  DAG::vertexAtOrder(int64_t o){
     if (o < _numVertices && o >= 0) {
       return invOrd[o];
     } else {
@@ -110,17 +110,17 @@ namespace supbub{
     }
   }
 
-  INT
-  DAG::rangeMaxOutChild(INT start, INT end){
-    INT l_rmq, r_rmq;
+  int64_t
+  DAG::rangeMaxOutChild(int64_t start, int64_t end){
+    int64_t l_rmq, r_rmq;
     if(start < end){l_rmq=start; r_rmq=end;}
     else{l_rmq=end; r_rmq=start;}
     return outChild[(*rmqOutChild)(r_rmq, l_rmq)];
   }
 
-  INT
-  DAG::rangeMinOutParent(INT start, INT end){
-    INT l_rmq, r_rmq;
+  int64_t
+  DAG::rangeMinOutParent(int64_t start, int64_t end){
+    int64_t l_rmq, r_rmq;
     if(start < end){l_rmq=start; r_rmq=end;}
     else{l_rmq=end; r_rmq=start;}
     return outParent[(*rmqOutParent)(l_rmq, r_rmq)];
@@ -141,7 +141,7 @@ namespace supbub{
     topologicalSort(getSourceId(), visited, ordStack);
   
     // Return result
-    INT i=0;
+    int64_t i=0;
     while (!ordStack.empty()) {
       invOrd[i++] = ordStack.top();
       ordStack.pop();
@@ -178,7 +178,7 @@ namespace supbub{
     VERTEXID ver;
     bool exitDone, entranceDone;
     Candidate* pvsEnt = nullptr;
-    for (INT ord = 0; ord < _numVertices; ++ord) {  // in topo-order
+    for (int64_t ord = 0; ord < _numVertices; ++ord) {  // in topo-order
       ver = invOrd[ord];
       exitDone = false;
       entranceDone= false;    
@@ -187,7 +187,7 @@ namespace supbub{
       if (! _parentList[ver].empty()) {
 	for (i = _parentList[ver].begin(); !exitDone && i != _parentList[ver].end(); ++i) {
 	  if (_outDegree[*i] == 1) {  // a parent with only one child 
-	    Candidate* pCand = candidates.insert((INT)ver, false,pvsEnt);
+	    Candidate* pCand = candidates.insert((int64_t)ver, false,pvsEnt);
 	    exitDone = true;
 	  }
 	}
@@ -214,9 +214,9 @@ namespace supbub{
   DAG::prepareOutParNOutChildRMQ(){   
 
     VERTEXID_LIST_ITERATOR i;
-    INT minOrd, maxOrd;
+    int64_t minOrd, maxOrd;
 
-    for (INT v = 0; v < _numVertices; ++v){
+    for (int64_t v = 0; v < _numVertices; ++v){
        // fill outParent
       minOrd = _numVertices;
       if (! _parentList[v].empty()) {
@@ -243,14 +243,14 @@ namespace supbub{
     // prepare for RMQ
 
     // create a vector of length len and initialize it with 0s
-    sdsl::int_vector<> v(_numVertices , 0 ); 
-    for(INT i = 0; i < _numVertices; i++){
+    sdsl::int_vector<64> v(_numVertices , 0 ); 
+    for(int64_t i = 0; i < _numVertices; i++){
       v[i] = outParent[i];
     }
 
-    rmqOutParent = new sdsl::rmq_succinct_sct<>(&v);
+    rmqOutParent = new sdsl::rmq_succinct_sct<64>(&v);
 
-    for(INT i = 0; i < _numVertices; i++){
+    for(int64_t i = 0; i < _numVertices; i++){
       v[i] = outChild[i];
     }
 
