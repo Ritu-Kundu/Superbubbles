@@ -5,7 +5,7 @@ CC=g++
  
 CFLAGS= -g -D_USE_32 -msse3 -fopenmp -O3 -fomit-frame-pointer -funroll-loops 
  
-LFLAGS= -std=c++11 -O3 -DNDEBUG -I $(SDSL_DIR)/include/ -L $(SDSL_DIR)/lib/ -lsdsl -Wl,-rpath $(PWD)/sdsl-lite/lib
+LFLAGS= -std=c++11 -O3 -DNDEBUG -I $(SDSL_DIR)/include/ -lsdsl ##-Wl,-rpath $(PWD)/sdsl-lite/lib -L $(SDSL_DIR)/lib/
 
 LIB=libsupbub.a
 EXE=supbub
@@ -21,22 +21,21 @@ OBJ=$(SRC:.cpp=.o)
 .SUFFIXES: .cpp .o 
 
  
-all: $(LIB) $(EXE) $(SDSL_DIR)/lib/libsdsl.a
+all: $(LIB) $(EXE)
  
 .cpp.o: 
 	$(CC) $(CFLAGS)-c $(LFLAGS) $< 
 
-$(LIB): $(OBJ) $(SDSL_DIR)/lib/libsdsl.a
+$(LIB): $(OBJ) 
 	ar -rs $@ $(OBJ)
 
 $(SDSL_DIR)/lib/libsdsl.a:
 	+cd $(SDSL_DIR) && ./install.sh `pwd`
 
-$(EXE): $(OBJ) $(SDSL_DIR)/lib/libsdsl.a 
+$(EXE): $(OBJ)
 	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LFLAGS) 
 
-$(OBJ): $(MF) $(HD) $(SDSL_DIR)/lib/libsdsl.a
+$(OBJ): $(MF) $(HD)
 
 clean:
 	rm -f $(OBJ) $(EXE) *~
-	cd $(SDSL_DIR) && ./uninstall.sh
