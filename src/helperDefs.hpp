@@ -16,32 +16,26 @@
 #ifndef HELPER_DEFS
 #define HELPER_DEFS
 
-#include <iostream>
 #include <sys/time.h>
 #include <getopt.h>
 
-namespace supbub {
-    struct InputFlags {
-        InputFlags() :
-            input_filename( nullptr ),
-            output_filename( nullptr )
-        {}
-        InputFlags( char *in_filename, char *out_filename ) :
-            input_filename( in_filename ),
-            output_filename( out_filename )
-        { }
-        ~InputFlags() {}
-        char *input_filename;
-        char *output_filename;
-    };
 
-    void usage( void );
-    int decodeFlags( int argc, char *argv[], struct InputFlags *flags );
-    double gettime( void );
+#include "globalDefs.hpp"
 
-    void log( std::string s, uint64_t x );
+namespace supbub{
+struct InputFlags{
+  char* input_filename;
+  char* output_filename;
 
-    void log( std::string s, uint64_t x, uint64_t y );
+};
+
+void usage (void);
+int decodeFlags(int argc, char* argv [], struct InputFlags* flags);
+double gettime(void);
+
+void log(std::string s, INT x);
+
+void log(std::string s, INT x, INT y);
 
 } // end namespace
 

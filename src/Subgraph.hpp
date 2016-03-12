@@ -13,8 +13,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-/**
- * Defines the class Subgraph.
+/** Defines the class Subgraph.
  * It represents a subgraph (which inherits from the class Graph), creates an underlying DAG, and also assists in filtering out 'unreal' superbubbles.
  */
 
@@ -24,165 +23,168 @@
 #include "Graph.hpp"
 #include "DAG.hpp"
 
-namespace supbub {
+namespace supbub{
 
-    /** Class Subgraph
-     * A subgraph(G) is special graph obtained from a part of the original graph(H).
-     * @see Graph.
+  /** Class Subgraph
+   * A subgraph(G) is special graph obtained from a part of the original graph(H).
+   * @see Graph.
+   *
+   * A vertex in a subgraph is given a new vertex-id called 'local-id'. Its original id in the graph(H) from which this subgraph is obtained is called 'global-id'.
+   *
+   * This class maintains the global-id of each of its vertices by maintaining an array. It is the responsibility of the original graph(H) to set the global-ids of the vertices in this subgraph.
+   * 
+   *
+   * This class also provides for obtaining the underlying Directed Acyclic Graph(DAG), G', using the algorithm described in the paper "An O(m log m) -time Algorithm For Detecting Superbubbles" by Sung et al. This class is reponsible for creating and destroying its DAG.
+   *  - For obtaining a DAG from a subgraph, method requires to create two vertices(u' and u'') for each vertex(u) in the subgraph except for source(r) and terminal/sink(r'). A source and a terminal are also added to this DAG. Then edges are added to DAG depending on some conditions (see the paper).
+   *    -- Let offset is equal to the number of vertices(except r and r') in the subgraph.
+   *       --- Thus, in a DAG of the subgpah, number of vertices = 2 * offset + 2
+   *       --- This class approaches this 'duplication' of vertices by considering u and u' have same local-ids in the subgraph and its DAG while u'' has an id(called duplicate-local-id)) equal to (id of u + offset). To summarise,
+   *           Id of u'(in G') = Id of u(in G)
+   *           Id of u''(in G') = Id of u(in G) + offset
+   *       --- Just like in G, G' also has source and terminal/sink vertices having ids equal to the second-last and last indices of the vertices respectively.
+   *
+   * It also assists in reporting 'real' superbubbles found in its DAG by providing the following:
+   *  - Answering the following queries:
+   *    -- Id of u'' for a vertex u' in G'.
+   *    -- Does a given id of G' correspond to a duplicate u'' of some u'.
+   *    -- Id of u' for some dplicate vertex u'' in G'.
+   *    -- Offset of this subgraph. (as id of every u' is in the range[0, offset))
+   *  - It also maintains the dicovery and finishing times of the vertices in its DFS traversal to answer queries of the form: Is vertex x an ancesstor of vertex y?
+   *
+   * To conclude, this class provides for the following:
+   *  - Setting global-id of a vertex.
+   *  - Quering the global-id of a vertex. 
+   *  - Generating underlying DAG G:
+   *  - Assisting in reporting the 'real' superbubbles by providing functions to query the follwing:
+   *    -- Id of u'' for a vertex u' in G'.
+   *    -- Id of u' for some dplicate vertex u'' in G'.
+   *    -- Does some given id of G' correspond to a duplicate u''?
+   *    -- Is a vertex x an ancesstor of a vertex y? 
+   *    -- Offset of this subgraph. (as id of every u' is in the range[0, offset))
+   *
+   */
+
+  class Subgraph : public Graph{
+
+  public:
+   
+    /** Constructor
+     * @param n total number of vertices
+     */
+    Subgraph(INT n); 
+
+    /** Destructor */ 
+    ~Subgraph();
+
+    /** Returns the global-id for a given local-id.
+     * @param v local vertex-id.
+     * @return global vertex-id of v.
+     *         or -1 if v is invalid
+     */
+    VERTEXID getGlobalId(VERTEXID v);
+
+     /** Sets the global vertex-id of the given local vertex-id.
+     * @param localId local-id of the vertex whose global-id is to be set.
+     * @param globalId global-id to be set.
+     */
+    void setGlobalId(VERTEXID localId, VERTEXID globalId);
+
+     /** Returns the local-id of the source(r) of the graph.
      *
-     * A vertex in a subgraph is given a new vertex-id called 'local-id'. Its original id in the graph(H) from which this subgraph is obtained is called 'global-id'.
-     *
-     * This class maintains the global-id of each of its vertices by maintaining an array. It is the responsibility of the original graph(H) to set the global-ids of the vertices in this subgraph.
-     *
-     *
-     * This class also provides for obtaining the underlying Directed Acyclic Graph(DAG), G', using the algorithm described in the paper "An O(m log m) -time Algorithm For Detecting Superbubbles" by Sung et al. This class is responsible for creating and destroying its DAG.
-     *  - For obtaining a DAG from a subgraph, method requires to create two vertices(u' and u'') for each vertex(u) in the subgraph except for source(r) and terminal/sink(r'). A source and a terminal are also added to this DAG. Then edges are added to DAG depending on some conditions (see the paper).
-     *    -- Let offset is equal to the number of vertices(except r and r') in the subgraph.
-     *       --- Thus, in a DAG of the subgpah, number of vertices = 2 * offset + 2
-     *       --- This class approaches this 'duplication' of vertices by considering u and u' have same local-ids in the subgraph and its DAG while u'' has an id(called duplicate-local-id)) equal to (id of u + offset). To summarise,
-     *           Id of u'(in G') = Id of u(in G)
-     *           Id of u''(in G') = Id of u(in G) + offset
-     *       --- Just like in G, G' also has source and terminal/sink vertices having ids equal to the second-last and last indices of the vertices respectively.
-     *
-     * It also assists in reporting 'real' superbubbles found in its DAG by providing the following:
-     *  - Answering the following queries:
-     *    -- Id of u'' for a vertex u' in G'.
-     *    -- Does a given id of G' correspond to a duplicate u'' of some u'.
-     *    -- Id of u' for some duplicate vertex u'' in G'.
-     *    -- Offset of this subgraph. (as id of every u' is in the range[0, offset))
-     *  - It also maintains the discovery and finishing times of the vertices in its DFS traversal to answer queries of the form: Is vertex x an ancestor of vertex y?
-     *
-     * To conclude, this class provides for the following:
-     *  - Setting global-id of a vertex.
-     *  - Querying the global-id of a vertex.
-     *  - Generating underlying DAG G:
-     *  - Assisting in reporting the 'real' superbubbles by providing functions to query the following:
-     *    -- Id of u'' for a vertex u' in G'.
-     *    -- Id of u' for some dplicate vertex u'' in G'.
-     *    -- Does some given id of G' correspond to a duplicate u''?
-     *    -- Is a vertex x an ancesstor of a vertex y?
-     *    -- Offset of this subgraph. (as id of every u' is in the range[0, offset))
+     * It is the second-last vertex.
      *
      */
 
-    class Subgraph : public Graph {
+    VERTEXID getSourceId();
 
-      public:
+     /** Returns the local-id of the terminal/sink(r') of the graph.
+     *
+     * It is the last vertex.
+     *
+     */
+    VERTEXID getTerminalId();
 
-        /** Constructor
-         * @param n total number of vertices
-         */
-        Subgraph( uint64_t n );
+    /** Returns the duplicate-local-id of the vertex with the given local-id. 
+     * @return duplicate-local-id of v or -1 if v is invalid
+     */
+    VERTEXID getDuplicateId(VERTEXID v);
 
-        /** Destructor */
-        virtual ~Subgraph();
+    /** Returns the original-local-id of the vertex with the given duplicate-local-id. 
+     * @return original-local-id of v or -1 if v is invalid
+     */
+    VERTEXID getOriginalId(VERTEXID v);
 
-        /** Returns the global-id for a given local-id.
-         * @param v local vertex-id.
-         * @return global vertex-id of v.
-         *         or -1 if v is invalid
-         */
-        VertexID_t getGlobalId( VertexID_t v );
+    /** Checks whether the given local-id corresponds to duplicate(u'') vertex in the resultant dag or not. 
+     * @param v given local-id.
+     * @return true if v is local-id corresponding to duplicate vertex(u'') in the resultant dag G'.
+     *         false if v is local-id corresponding to original vertex(u') in the resultant dag G'.
+     *         an invalid v also returns false. 
+     */
+    bool isDuplicateId(VERTEXID v);
 
-        /** Sets the global vertex-id of the given local vertex-id.
-        * @param localId local-id of the vertex whose global-id is to be set.
-        * @param globalId global-id to be set.
-        */
-        void setGlobalId( VertexID_t localId, VertexID_t globalId );
+    /** Checks whether the given vertex is an ancestor of the given other vertex in DFS tree of this subgraph.
+     *
+     * getDag() should have been called before making a call to this function.
+     * 
+     * @param anc given local-id of ancestor.
+     * @param des given local-id of descendant.
+     * @return true if anc is an ancestor of des (i.e. discovery and finishing time of des lies in the range corresponding to discovery and finishing times of anc).
+     *         false if above condition isn't satisfied 
+     *               or anc/des/both are invalid
+     *               or getDAG() hasn't been called earlier than this function.
+     * 
+     */
+    bool isAncestor(VERTEXID anc, VERTEXID des);
 
-        /** Returns the local-id of the source(r) of the graph.
-        *
-        * It is the second-last vertex.
-        *
-        */
+    /** Returns offset of this subgraph.
+     */
+    INT getOffset();
 
-        VertexID_t getSourceId();
+    /** Returns a pointer to the underlying DAG of this subgraph. 
+     * Follows GraphToDAG method described in the paper.
+     * Uses DFS to find back-edges required in the method.
+     * At the same time fills the discovery and finishing time arrays of the vertices, required later while answering 'ancesstor queries'.
+     * The random source-vertex selected(if any)[as required in the method] is that with the local-id 0. 
+     */
+    DAG* getDAG();
 
-        /** Returns the local-id of the terminal/sink(r') of the graph.
-        *
-        * It is the last vertex.
-        *
-        */
-        VertexID_t getTerminalId();
+    //////////////////////// private ////////////////////////
+  private:
 
-        /** Returns the duplicate-local-id of the vertex with the given local-id.
-         * @return duplicate-local-id of v or -1 if v is invalid
-         */
-        VertexID_t getDuplicateId( VertexID_t v );
+    /** Pointer to the array mapping subgraph's(G) vertex id (local) to graph's(H) vertex id (global). */
+    INT* _reverseMapId;
 
-        /** Returns the original-local-id of the vertex with the given duplicate-local-id.
-         * @return original-local-id of v or -1 if v is invalid
-         */
-        VertexID_t getOriginalId( VertexID_t v );
+    /** Integer representing the offset between a vertex's local-id and its duplicate vetex's local-id in this subgraph's underlying DAG i.e. G'.
+     *
+     *  - 0 to offset-1 are ids of the original vertices(u') in the dag of this subgraph
+     *  - offest to size(of dag)-2 are the ids of the duplicate vertices(u'').
+     *    -- (size -2) because last and second-last correspond to sink and source resp.  
+     * -- used for duplicating nodes while obtaining the DAG of this subgraph 
+     */
+    INT _offSet;
 
-        /** Checks whether the given local-id corresponds to duplicate(u'') vertex in the resultant dag or not.
-         * @param v given local-id.
-         * @return true if v is local-id corresponding to duplicate vertex(u'') in the resultant dag G'.
-         *         false if v is local-id corresponding to original vertex(u') in the resultant dag G'.
-         *         an invalid v also returns false.
-         */
-        bool isDuplicateId( VertexID_t v );
+    DAG* _dag;
 
-        /** Checks whether the given vertex is an ancestor of the given other vertex in DFS tree of this subgraph.
-         *
-         * getDag() should have been called before making a call to this function.
-         *
-         * @param anc given local-id of ancestor.
-         * @param des given local-id of descendant.
-         * @return true if anc is an ancestor of des (i.e. discovery and finishing time of des lies in the range corresponding to discovery and finishing times of anc).
-         *         false if above condition isn't satisfied
-         *               or anc/des/both are invalid
-         *               or getDAG() hasn't been called earlier than this function.
-         *
-         */
-        bool isAncestor( VertexID_t anc, VertexID_t des );
+    /** Pointer to the array mapping subgraph's(G) vertices to their discovery time in DFS traversal. */
+    INT* _discovery;
 
-        /** Returns offset of this subgraph.
-         */
-        uint64_t getOffset();
+    /** Pointer to the array mapping subgraph's(G) vertices to their finishing time in DFS traversal. */
+    INT* _finish;
 
-        /** Returns a pointer to the underlying DAG of this subgraph.
-         * Follows GraphToDAG method described in the paper.
-         * Uses DFS to find back-edges required in the method.
-         * At the same time fills the discovery and finishing time arrays of the vertices, required later while answering 'ancesstor queries'.
-         * The random source-vertex selected(if any)[as required in the method] is that with the local-id 0.
-         */
-        DAG *getDAG();
+    /** enum for vertex-color used in case of DFS to identify back-edges*/
+    enum Color { WHITE, GRAY, BLACK };
 
-        //////////////////////// private ////////////////////////
-      private:
+    /** Adds edges to the underlying DAG along with filling discovery and finishing time of the vertices in DFS traversal. 
+     * @param u root vertex.
+     * @param tick clock for dicvery and finishing time.
+     * @param color Pointer to an array marking colors of the vertices to keep track of unvisited(WHITE), visited but not finished(GRAY) and finished(BLACK) vertices.
+     *
+     */   
+    void DFSVisit(VERTEXID u, INT tick, Color* color);
+  
 
-        /** Pointer to the array mapping subgraph's(G) vertex id (local) to graph's(H) vertex id (global). */
-        uint64_t *_reverseMapId;
-
-        /** Integer representing the offset between a vertex's local-id and its duplicate vertex's local-id in this subgraph's underlying DAG i.e. G'.
-         *
-         *  - 0 to offset-1 are ids of the original vertices(u') in the dag of this subgraph
-         *  - offset to size(of dag)-2 are the ids of the duplicate vertices(u'').
-         *    -- (size -2) because last and second-last correspond to sink and source resp.
-         * -- used for duplicating nodes while obtaining the DAG of this subgraph
-         */
-        uint64_t _offSet;
-
-        DAG *_dag;
-
-        /** Pointer to the array mapping subgraph's(G) vertices to their discovery time in DFS traversal. */
-        uint64_t *_discovery;
-
-        /** Pointer to the array mapping subgraph's(G) vertices to their finishing time in DFS traversal. */
-        uint64_t *_finish;
-
-        /** enum for vertex-color used in case of DFS to identify back-edges*/
-        enum Color { WHITE, GRAY, BLACK };
-
-        /** Adds edges to the underlying DAG along with filling discovery and finishing time of the vertices in DFS traversal.
-         * @param u root vertex.
-         * @param tick clock for dicvery and finishing time.
-         * @param color Pointer to an array marking colors of the vertices to keep track of unvisited(WHITE), visited but not finished(GRAY) and finished(BLACK) vertices.
-         *
-         */
-        void DFSVisit( VertexID_t u, uint64_t tick, Color *color );
-    };
+ 
+  };
 
 } // end namespace
 #endif

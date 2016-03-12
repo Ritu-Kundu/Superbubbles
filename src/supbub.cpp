@@ -18,67 +18,70 @@
 
 #include <fstream>
 
+#include "globalDefs.hpp"
 #include "Graph.hpp"
 #include "DetectSuperBubble.hpp"
 
 
 using namespace supbub;
 
-int main( int argc, char **argv ) {
-    /* Decode arguments */
-    struct InputFlags flags;
-    if( decodeFlags( argc, argv, &flags ) == 0 ) {
-        usage();
-        return ( 1 );
-    }
-    /* Read the input file in memory */
-    std::ifstream infile( flags.input_filename );
-    if( !infile.is_open()) {
-        fprintf( stderr, "Cannot open input file \n" );
-        return 1;
-    }
-    // First line of the file contains number odf vertices
-    uint64_t numVertices;
-    infile >> numVertices;
-    Graph graph( numVertices );
+int main(int argc, char **argv){
+  
+  /* Decode arguments */
+  struct InputFlags flags;
+  if(decodeFlags (argc, argv, &flags ) == 0){
+    usage();
+    return (1);
+  }
+  /* Read the input file in memory */
+  std::ifstream infile(flags.input_filename);
+  if(!infile.is_open()){
+    fprintf(stderr, "Cannot open input file \n" );
+    return 1;
+  }
+  // First line of the file contains number odf vertices
+  INT numVertices;
+  infile >> numVertices;
+  Graph graph(numVertices);
 
-    // File contains edges such that
-    //  - new line as separator between edges
-    //  - space/tab a separator between vertices of an edge
-    uint64_t u, v;
-    while( infile >> u >> v ) {
-        // add egde in the graph
-        graph.addEdge( u, v );
-    }
+  // File contains edges such that
+  //  - new line as separator between edges
+  //  - space/tab a separator between vertices of an edge
+  INT u, v;
+  while (infile >> u >> v) {
+    // add egde in the graph
+    graph.addEdge(u, v);
+  }
 
 
-    /* List for results */
-    DetectSuperBubble::supperbubbleList_t superBubblesList { };
+  /* List for results */
+  DetectSuperBubble::SUPERBUBBLE_LIST superBubblesList{};
 
-    /* Find superbubbles */
-    double start = gettime();
-    DetectSuperBubble dsb;
-    dsb.find( graph, superBubblesList );
-    double end = gettime();
+  /* Find superbubbles */
+  double start = gettime();
+  DetectSuperBubble dsb;
+  dsb.find(graph, superBubblesList); 
+  double end = gettime();
 
-    /* Write output */
-    std::ofstream outfile( flags.output_filename );
-    if( !outfile.is_open()) {
-        fprintf( stderr, "Cannot open output file \n" );
-        return 1;
-    }
-
-    outfile << "Vertices: " << numVertices << "\n";
-    outfile << "Edges: " << graph.numEdges() << "\n";
-    outfile << "Elapsed time for processing: " << ( end - start ) << " secs.\n";
-    outfile << "Number of superbubbles found: " << superBubblesList.size() << ".\n";
-    DetectSuperBubble::supperbubbleList_t::iterator i;
-    for( i = superBubblesList.begin(); i != superBubblesList.end(); ++i ) {
-        outfile << "<" << ( *i ).entrance << "," << ( *i ).exit << ">\n";
-    }
-    // clean up
-    delete[] flags.input_filename;
-    delete[] flags.output_filename;
+  /* Write output */
+  std::ofstream outfile(flags.output_filename);
+  if(!outfile.is_open()){
+    fprintf(stderr, "Cannot open output file \n" );
+    return 1;
+  }
+  
+  outfile <<  "Vertices: " << numVertices << "\n";
+  outfile << "Edges: "<< graph.numEdges() << "\n";
+  outfile << "Elapsed time for processing: " << (end - start)<< " secs.\n";
+  outfile << "Number of superbubbles found: " << superBubblesList.size()<< ".\n";
+  DetectSuperBubble::SUPERBUBBLE_LIST::iterator i;
+  for (i = superBubblesList.begin(); i != superBubblesList.end(); ++i) {
+    outfile << "<"<< (*i).entrance << "," << (*i).exit << ">\n";
+  }
+  // clean up
+  delete[] flags.input_filename;
+  delete[] flags.output_filename;
+  
 }
 
 

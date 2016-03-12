@@ -1,38 +1,47 @@
-/* sdsl - succinct data structures library
-    Copyright (C) 2010 Simon Gog
-
+/**
+    Superbubbles
+    Copyright (C) 2016 Ritu Kundu, Fatima Vayani, Manal Mohamed, Solon P. Pissis 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see http://www.gnu.org/licenses/ .
-*/
-/*! \file construct_isa.hpp
-    \brief construct_isa.hpp contains a space and time efficient construction method for the inverse suffix array
-	\author Simon Gog
-*/
-#ifndef INCLUDED_SDSL_CONSTRUCT_ISA
-#define INCLUDED_SDSL_CONSTRUCT_ISA
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+**/
 
-#include "int_vector.hpp"
-#include "util.hpp"
+/** Declaration used by each of the other modules
+*/
 
-#include <iostream>
-#include <stdexcept>
+#ifndef GLOBAL_DEFS
+#define GLOBAL_DEFS
+
+#include <cstdint>
+#include <stdio.h>
+#include <iterator>
 #include <list>
+#include <stack>
+#include <string>
+#include <iostream>
 
-namespace sdsl
-{
+namespace supbub {
+    typedef int64_t INT;
+}
+/*
+namespace supbub{
+#define DEBUG
+#ifdef _USE_64
+  typedef int64_t INT;
+#endif
 
-void construct_isa(cache_config& config);
+#ifdef _USE_32
+  typedef int32_t INT;
+#endif
 
-}// end namespace
+} // end namespace
+ */
 
 #endif

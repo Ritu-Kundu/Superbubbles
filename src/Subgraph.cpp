@@ -13,199 +13,210 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-/**
- * Implements class Subraph
+/** Implements class Subraph
  */
 #include "Subgraph.hpp"
 
-namespace supbub {
+namespace supbub{
 
-    Subgraph::Subgraph( uint64_t n ) : Graph( n ) {
-        //super();
-        _reverseMapId = new uint64_t[_numVertices];
-        std::fill_n( _reverseMapId, _numVertices, -1 ); // set to -1
-        _offSet = n - 2;
-        _dag = nullptr;
-        _discovery = nullptr;
-        _finish = nullptr;
+  Subgraph::Subgraph(INT n):Graph(n) {
+    //super();
+    _reverseMapId = new INT[_numVertices];
+    std::fill_n(_reverseMapId, _numVertices, -1); // set to -1
+    _offSet = n-2;
+    _dag = nullptr;
+    _discovery = nullptr;
+    _finish = nullptr;
+    
+  }
 
+  Subgraph::~Subgraph() {
+    delete[] _reverseMapId;
+    if (_dag != nullptr) {
+      delete _dag;
+      delete[] _discovery;
+      delete[] _finish;
+    }
+  }
+
+  VERTEXID
+  Subgraph::getGlobalId(VERTEXID v){
+    if (v < _numVertices && v >=0 ) {
+      return _reverseMapId[v];
+    } else {
+      log("Invalid v : ", v);
+      return -1;
+    }
+  }
+
+  void
+  Subgraph::setGlobalId(VERTEXID localId, VERTEXID globalId){
+    if (localId <_numVertices && localId >=0 ) { 
+      _reverseMapId[localId] = globalId;
+    } else {
+      log("Invalid localId : ", localId);
+    }
+  }
+
+  VERTEXID
+  Subgraph::getSourceId(){
+    return _numVertices-2; // second last vertex
+  }
+
+  VERTEXID
+  Subgraph::getTerminalId(){
+    return _numVertices-1; // last vertex
+  }
+
+  VERTEXID
+  Subgraph::getDuplicateId(VERTEXID v){
+    if (v < _numVertices && v >=0 ) {
+      return v + _offSet;
+    } else {
+      log("Invalid v : ", v);
+      return -1;
+    }
+  }
+
+  VERTEXID
+  Subgraph::getOriginalId(VERTEXID v){
+    if (v < 2*_offSet && v >= _offSet ) {
+      return v - _offSet;
+    } else {
+      log("Invalid v'' : ", v);
+      return -1;
+    }
+  }
+
+  bool
+  Subgraph::isDuplicateId(VERTEXID v){
+   if (v < _numVertices && v >=0 ) {
+     return !(v < _offSet);
+    } else {
+      log("Invalid v : ", v);
+      return false;
+    }
+  }
+
+  bool
+  Subgraph::isAncestor(VERTEXID anc, VERTEXID des){
+    if (anc < _numVertices && anc >=0 && des < _numVertices && des > 0) {
+      if (_dag != nullptr) {
+	return (_discovery[des] > _discovery[anc] && _finish[des] < _finish[anc]);
+      } else {
+	log("DFS Traversal not made yet. Call getDAG() before making call to this function.", 0);
+	return false;
+      }
+    } else {
+      log("Invalid ancestor or descendent id : ", anc, des);
+      return false;
+    }
+  }
+
+  INT Subgraph::getOffset(){
+    return _offSet;
+  }
+
+
+  DAG*
+  Subgraph::getDAG(){
+    _dag = new DAG(2*_offSet + 2);
+    _discovery = new INT[_numVertices];
+    _finish = new INT[_numVertices];
+    VERTEXID_LIST_ITERATOR i;
+    VERTEXID newSource = _dag->getSourceId();
+    VERTEXID thisSource = getSourceId();
+    VERTEXID newTerminal = _dag->getTerminalId();
+    VERTEXID thisTerminal = getTerminalId();
+
+    
+    /* Add {(r, v' ) | (r, v) ∈ E(G)} */
+    if (! _adjList[thisSource].empty()) {
+      for (i = _adjList[thisSource].begin(); i != _adjList[thisSource].end(); ++i) {
+	if (*i != thisTerminal) {
+	  _dag->addEdge(newSource, *i); //  as v and v' have same local-id
+	}
+      }
     }
 
-    Subgraph::~Subgraph() {
-        delete[] _reverseMapId;
-        if( _dag != nullptr ) {
-            delete _dag;
-            delete[] _discovery;
-            delete[] _finish;
-        }
+    /* Add {(v'' , r' ) | (v, r' ) ∈ E(G)} */
+    if (! _parentList[thisTerminal].empty()) {
+      for (i = _parentList[thisTerminal].begin(); i != _parentList[thisTerminal].end(); ++i) {
+	if (*i != thisSource) {
+	_dag->addEdge(getDuplicateId(*i), newTerminal);
+	}
+      }
     }
 
-    VertexID_t Subgraph::getGlobalId( VertexID_t v ) {
-        if( v < _numVertices && v >= 0 ) {
-            return _reverseMapId[ v ];
-        } else {
-            log( "Invalid v : ", v );
-            return -1;
-        }
+    /* Add {(u', v'), (u'', v'') |(u, v) ∈ E(G), (u, v) is not a back edge } and {(u', v'') | (u, v) ∈ E(G), (u, v) is a back edge} */
+    VERTEXID source = thisSource;
+    if (_outDegree[thisSource] == 0) { // no source r, select a random vertex to be source/root
+      source = 0; // 0 is chosen
     }
+    Subgraph::Color* color = new Subgraph::Color[_numVertices];
+    std::fill_n( color, _numVertices, WHITE ); // set to false
+    DFSVisit(source, 0, color);
 
-    void Subgraph::setGlobalId( VertexID_t localId, VertexID_t globalId ) {
-        if( localId < _numVertices && localId >= 0 ) {
-            _reverseMapId[ localId ] = globalId;
-        } else {
-            log( "Invalid localId : ", localId );
-        }
+    /* Adjust source and terminal vertices */
+    VERTEXID lastDAGID = _dag->numVertices()-2;
+    if (_outDegree[thisSource] == 0) { // G does not contain r
+      for (VERTEXID u=0; u < lastDAGID; ++u) {
+	if (_dag->getInDegree(u) == 0) { // for every u ∈ V (G ) such that u has no incoming edge in G'
+	  _dag->addEdge(newSource, u);//create an edge (r, u)
+	}
+      }
     }
-
-    VertexID_t Subgraph::getSourceId() {
-        return _numVertices - 2; // second last vertex
+    if (_inDegree[thisTerminal] == 0) { // G does not contain r'
+      for (VERTEXID u=0; u < lastDAGID; ++u) {
+	if (_dag->getOutDegree(u) == 0) { // for every u ∈ V (G ) such that u has no outgoing edge in G'
+	  _dag->addEdge(u, newTerminal);//create an edge (u, r')
+	}
+      }
     }
+    //clean-up
+    delete[] color;
 
-    VertexID_t Subgraph::getTerminalId() {
-        return _numVertices - 1; // last vertex
-    }
-
-    VertexID_t Subgraph::getDuplicateId( VertexID_t v ) {
-        if( v < _numVertices && v >= 0 ) {
-            return v + _offSet;
-        } else {
-            log( "Invalid v : ", v );
-            return -1;
-        }
-    }
-
-    VertexID_t Subgraph::getOriginalId( VertexID_t v ) {
-        if( v < 2 * _offSet && v >= _offSet ) {
-            return v - _offSet;
-        } else {
-            log( "Invalid v'' : ", v );
-            return -1;
-        }
-    }
-
-    bool Subgraph::isDuplicateId( VertexID_t v ) {
-        if( v < _numVertices && v >= 0 ) {
-            return v >= _offSet;
-        } else {
-            log( "Invalid v : ", v );
-            return false;
-        }
-    }
-
-    bool Subgraph::isAncestor( VertexID_t anc, VertexID_t des ) {
-        if( anc < _numVertices && anc >= 0 && des < _numVertices && des > 0 ) {
-            if( _dag != nullptr ) {
-                return ( _discovery[ des ] > _discovery[ anc ] && _finish[ des ] < _finish[ anc ] );
-            } else {
-                log( "DFS Traversal not made yet. Call getDAG() before making call to this function.", 0 );
-                return false;
-            }
-        } else {
-            log( "Invalid ancestor or descendent id : ", anc, des );
-            return false;
-        }
-    }
-
-    uint64_t Subgraph::getOffset() {
-        return _offSet;
-    }
+    return _dag;
+  }
 
 
-    DAG * Subgraph::getDAG() {
-        _dag = new DAG( 2 * _offSet + 2 );
-        _discovery = new uint64_t[_numVertices];
-        _finish = new uint64_t[_numVertices];
-        VertexID_List_Iterator_t i;
-        VertexID_t newSource = _dag->getSourceId();
-        VertexID_t thisSource = getSourceId();
-        VertexID_t newTerminal = _dag->getTerminalId();
-        VertexID_t thisTerminal = getTerminalId();
+  //////////////////////// private ////////////////////////
 
 
-        /* Add {(r, v' ) | (r, v) ∈ E(G)} */
-        if( !_adjList[ thisSource ].empty()) {
-            for( i = _adjList[ thisSource ].begin(); i != _adjList[ thisSource ].end(); ++i ) {
-                if( *i != thisTerminal ) {
-                    _dag->addEdge( newSource, *i ); //  as v and v' have same local-id
-                }
-            }
-        }
-
-        /* Add {(v'' , r' ) | (v, r' ) ∈ E(G)} */
-        if( !_parentList[ thisTerminal ].empty()) {
-            for( i = _parentList[ thisTerminal ].begin(); i != _parentList[ thisTerminal ].end(); ++i ) {
-                if( *i != thisSource ) {
-                    _dag->addEdge( getDuplicateId( *i ), newTerminal );
-                }
-            }
-        }
-
-        /* Add {(u', v'), (u'', v'') |(u, v) ∈ E(G), (u, v) is not a back edge } and {(u', v'') | (u, v) ∈ E(G), (u, v) is a back edge} */
-        VertexID_t source = thisSource;
-        if( _outDegree[ thisSource ] == 0 ) { // no source r, select a random vertex to be source/root
-            source = 0; // 0 is chosen
-        }
-        Subgraph::Color *color = new Subgraph::Color[_numVertices];
-        std::fill_n( color, _numVertices, WHITE ); // set to false
-        DFSVisit( source, 0, color );
-
-        /* Adjust source and terminal vertices */
-        VertexID_t lastDAGID = _dag->numVertices() - 2;
-        if( _outDegree[ thisSource ] == 0 ) { // G does not contain r
-            for( VertexID_t u = 0; u < lastDAGID; ++u ) {
-                if( _dag->getInDegree( u ) == 0 ) { // for every u ∈ V (G ) such that u has no incoming edge in G'
-                    _dag->addEdge( newSource, u );//create an edge (r, u)
-                }
-            }
-        }
-        if( _inDegree[ thisTerminal ] == 0 ) { // G does not contain r'
-            for( VertexID_t u = 0; u < lastDAGID; ++u ) {
-                if( _dag->getOutDegree( u ) == 0 ) { // for every u ∈ V (G ) such that u has no outgoing edge in G'
-                    _dag->addEdge( u, newTerminal );//create an edge (u, r')
-                }
-            }
-        }
-        //clean-up
-        delete[] color;
-
-        return _dag;
-    }
+  void
+  Subgraph::DFSVisit(VERTEXID u, INT tick, Subgraph::Color* color){
+    color[u] = GRAY;
+    _discovery[u] = ++tick;
+    VERTEXID_LIST_ITERATOR i;
+    VERTEXID thisSource = getSourceId();
+    VERTEXID thisTERMINAL = getTerminalId();
+    if (! _adjList[u].empty()) {
+      for (i = _adjList[u].begin(); i != _adjList[u].end(); ++i) {	
+	VERTEXID v = *i;
+	if (color[v] == WHITE){ // u-v is tree-edge
+	  if (v != thisTERMINAL && u!= thisTERMINAL && v!=thisSource && u!=thisSource) {
+	    _dag->addEdge(u, v); // add u'-v'
+	    _dag->addEdge(getDuplicateId(u), getDuplicateId(v)); // add u''-v''
+	  }
+	  DFSVisit(v, tick, color);
+	}
+	else if (color[v] == GRAY) { // u-v is back edge
+	  if (v != thisTERMINAL && u!= thisTERMINAL && v!=thisSource && u!=thisSource) {
+	    _dag->addEdge(u, getDuplicateId(v)); // add u'-v''
+	  }
+	}
+	else{// forward or cross edge
+	  if (v != thisTERMINAL && u!= thisTERMINAL && v!=thisSource && u!=thisSource) {
+	    _dag->addEdge(u, v); // add u'-v'
+	    _dag->addEdge(getDuplicateId(u), getDuplicateId(v)); // add u''-v''
+	  }
+	}
+      }
+    }    
+    color[u] = BLACK;
+    _finish[u] = ++tick;
+  }
 
 
-    //////////////////////// private ////////////////////////
-
-
-    void Subgraph::DFSVisit( VertexID_t u, uint64_t tick, Subgraph::Color *color ) {
-        color[ u ] = GRAY;
-        _discovery[ u ] = ++tick;
-        VertexID_List_Iterator_t i;
-        VertexID_t thisSource = getSourceId();
-        VertexID_t thisTERMINAL = getTerminalId();
-        if( !_adjList[ u ].empty()) {
-            for( i = _adjList[ u ].begin(); i != _adjList[ u ].end(); ++i ) {
-                VertexID_t v = *i;
-                if( color[ v ] == WHITE ) { // u-v is tree-edge
-                    if( v != thisTERMINAL && u != thisTERMINAL && v != thisSource && u != thisSource ) {
-                        _dag->addEdge( u, v ); // add u'-v'
-                        _dag->addEdge( getDuplicateId( u ), getDuplicateId( v )); // add u''-v''
-                    }
-                    DFSVisit( v, tick, color );
-                }
-                else if( color[ v ] == GRAY ) { // u-v is back edge
-                    if( v != thisTERMINAL && u != thisTERMINAL && v != thisSource && u != thisSource ) {
-                        _dag->addEdge( u, getDuplicateId( v )); // add u'-v''
-                    }
-                }
-                else {// forward or cross edge
-                    if( v != thisTERMINAL && u != thisTERMINAL && v != thisSource && u != thisSource ) {
-                        _dag->addEdge( u, v ); // add u'-v'
-                        _dag->addEdge( getDuplicateId( u ), getDuplicateId( v )); // add u''-v''
-                    }
-                }
-            }
-        }
-        color[ u ] = BLACK;
-        _finish[ u ] = ++tick;
-    }
 }// end namespace
  

@@ -19,83 +19,72 @@
 #ifndef CANDIDATELIST_HPP
 #define CANDIDATELIST_HPP
 
-namespace supbub {
+#include "globalDefs.hpp"
+
+namespace supbub{
 
 /** type for a candidate */
-    struct Candidate {
-        Candidate( int64_t vertexId, bool isEntrance, Candidate *pvsEntrance, Candidate *next, Candidate *pvs ) :
-            vertexId( vertexId ),
-            isEntrance( isEntrance ),
-            pvsEntrance( pvsEntrance ),
-            next( next ),
-            pvs( pvs )
-        {}
-        ~Candidate() {}
+struct Candidate{
+  INT vertexId; // int representing the vertex
+  bool isEntrance;  // true if its an entrance, false otherwise
 
-        int64_t vertexId; // int representing the vertex
-        bool isEntrance;  // true if its an entrance, false otherwise
+  /** pointer to previous entrance candidate in the list wrt this candidate if it's an exit candidate. For an entrance candidate, it is null.
+   * To be used only for exit candidates. 
+   * **See comments for pvsEntrance array in DAG.hpp** */
+  Candidate* pvsEntrance;  
 
-        /**
-         * pointer to previous entrance candidate in the list wrt this candidate if it's an exit candidate. For an entrance candidate, it is null.
-         * To be used only for exit candidates.
-         * **See comments for pvsEntrance array in DAG.hpp**
-         */
-        Candidate *pvsEntrance;
+  Candidate* next;  // pointer to next node
+  Candidate* pvs;  // pointer to previous node
+};
 
-        Candidate *next;  // pointer to next node
-        Candidate *pvs;  // pointer to previous node
-    };
+  /** Class CandidateList
+   * A CandidateList is doubly-linked list of candidates.
+   * This class provides for the following:
+   *  - Inserting in the list (at the tail).
+   *  - Deleting the candidate at the tail.
+   *  - Checking if the list is empty.
+   *  - Returning a pointer to the candidate at the head of the list.
+   *  - Returning a pointer to the candidate at the tail of the list.
+   */
 
-    /**
-     * Class CandidateList
-     * A CandidateList is doubly-linked list of candidates.
-     * This class provides for the following:
-     *  - Inserting in the list (at the tail).
-     *  - Deleting the candidate at the tail.
-     *  - Checking if the list is empty.
-     *  - Returning a pointer to the candidate at the head of the list.
-     *  - Returning a pointer to the candidate at the tail of the list.
+  class CandidateList{
+
+  public:
+
+    /** Constructor */
+    CandidateList();
+
+    /** Destructor */ 
+    ~CandidateList();
+
+    /** Adds a candidate at the tail.
+     * @param ver vertexId of the candidate
+     * @param isEntrance // true if its an entrance, false otherwise
+     * @param pvsEntrance pointer to previous entrance candidate in the list wrt this candidate if it's an exit candidate. For an entrance candidate, it is null.
      */
+    Candidate* insert(INT ver, bool isEntrance, Candidate* pvsEntrance); 
 
-    class CandidateList {
+    /** Returns a pointer to the candidate at the tail of the list. */
+    Candidate* tail();
 
-      public:
+    /** Returns a pointer to the candidate at the head of the list. */
+    Candidate* front();
 
-        /** Constructor */
-        CandidateList();
+    /** Checks if the list is empty. */
+    bool empty();
 
-        /** Destructor */
-        ~CandidateList();
+    /** Delets the element at the tail. */
+    void delete_tail();
 
-        /**
-         * Adds a candidate at the tail.
-         * @param ver vertexId of the candidate
-         * @param isEntrance // true if its an entrance, false otherwise
-         * @param pvsEntrance pointer to previous entrance candidate in the list wrt this candidate if it's an exit candidate. For an entrance candidate, it is null.
-         */
-        Candidate *insert( uint64_t ver, bool isEntrance, Candidate *pvsEntrance );
+  private:
 
-        /** Returns a pointer to the candidate at the tail of the list. */
-        Candidate *tail();
+    /** pointer to the candidate at the head of the list */
+    Candidate* _front;
 
-        /** Returns a pointer to the candidate at the head of the list. */
-        Candidate *front();
+   /** pointer to the candidate at the tail of the list */
+    Candidate* _tail;
 
-        /** Checks if the list is empty. */
-        bool empty();
-
-        /** Delets the element at the tail. */
-        void delete_tail();
-
-      private:
-
-        /** pointer to the candidate at the head of the list */
-        Candidate *_front;
-
-        /** pointer to the candidate at the tail of the list */
-        Candidate *_tail;
-
-    };
+  };
 
 } // end namespace
 #endif

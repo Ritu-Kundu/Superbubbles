@@ -16,64 +16,67 @@
 /** Implements the class CandidateList
 */
 
-#include <stdint.h>
 #include "CandidateList.hpp"
+namespace supbub{
 
-namespace supbub {
+  CandidateList::CandidateList(){
+    _front = nullptr;
+    _tail = nullptr;
+  }
 
-    CandidateList::CandidateList() {
-        _front = nullptr;
-        _tail = nullptr;
+  CandidateList::~CandidateList(){
+    while (!empty()) {
+      delete_tail();
     }
+  }
 
-    CandidateList::~CandidateList() {
-        while( !empty()) {
-            delete_tail();
-        }
+  Candidate* 
+  CandidateList::insert(INT ver, bool isEntrance, Candidate* pvsEntrance){
+    Candidate* newCand = new Candidate{ver, isEntrance, pvsEntrance, nullptr, _tail};
+
+    // if it's not the first node, set tail to it
+    if ( _tail != nullptr) {
+      _tail->next = newCand;
+      _tail= newCand;
     }
-
-    Candidate *CandidateList::insert( uint64_t ver, bool isEntrance, Candidate *pvsEntrance ) {
-        Candidate *newCand = new Candidate { ver, isEntrance, pvsEntrance, nullptr, _tail };
-
-        // if it's not the first node, set tail to it
-        if( _tail != nullptr ) {
-            _tail->next = newCand;
-            _tail = newCand;
-        }
-        else {  // if it's first node, set front
-            _front = newCand;
-            _tail = newCand;
-        }
-        return newCand;
+    else{  // if it's first node, set front
+      _front = newCand;
+      _tail = newCand;
     }
+    return newCand;
+  }
 
-    Candidate *CandidateList::tail() {
-        return _tail;
+  Candidate* 
+  CandidateList::tail(){
+    return _tail;
+  }
+
+  Candidate* 
+  CandidateList::front(){
+    return _front;
+  }
+
+  bool
+  CandidateList::empty(){
+    return (_front==nullptr && _tail==nullptr);
+  }
+
+  void
+  CandidateList::delete_tail(){
+    if (_tail != nullptr) {
+      if (_front == _tail) {  // last element in the list
+	delete _tail;
+	_front = nullptr;
+	_tail = nullptr;
+      }
+      else {
+	Candidate* newTail = _tail->pvs;
+	delete _tail;
+	newTail->next = nullptr;
+	_tail = newTail;
+      }
     }
-
-    Candidate *CandidateList::front() {
-        return _front;
-    }
-
-    bool CandidateList::empty() {
-        return ( _front == nullptr && _tail == nullptr );
-    }
-
-    void CandidateList::delete_tail() {
-        if( _tail != nullptr ) {
-            if( _front == _tail ) {  // last element in the list
-                delete _tail;
-                _front = nullptr;
-                _tail = nullptr;
-            }
-            else {
-                Candidate *newTail = _tail->pvs;
-                delete _tail;
-                newTail->next = nullptr;
-                _tail = newTail;
-            }
-        }
-    }
-
+  }
+   
 
 }// end namespace
