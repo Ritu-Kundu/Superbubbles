@@ -13,30 +13,35 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 **/
 
-/** Declaration used by each of the other modules
-*/
+#ifndef HELPER_DEFS
+#define HELPER_DEFS
 
-#ifndef GLOBAL_DEFS
-#define GLOBAL_DEFS
-
-#include <cstdint>
-#include <stdio.h>
-#include <iterator>
-#include <list>
-#include <stack>
-#include <string>
 #include <iostream>
+#include <sys/time.h>
+#include <getopt.h>
 
+namespace supbub {
+    struct InputFlags {
+        InputFlags() :
+            input_filename( nullptr ),
+            output_filename( nullptr )
+        {}
+        InputFlags( char *in_filename, char *out_filename ) :
+            input_filename( in_filename ),
+            output_filename( out_filename )
+        { }
+        ~InputFlags() {}
+        char *input_filename;
+        char *output_filename;
+    };
 
-namespace supbub{
-#define DEBUG
-#ifdef _USE_64
-  typedef int64_t INT;
-#endif
+    void usage( void );
+    int decodeFlags( int argc, char *argv[], struct InputFlags *flags );
+    double gettime( void );
 
-#ifdef _USE_32
-  typedef int32_t INT;
-#endif
+    void log( std::string s, uint64_t x );
+
+    void log( std::string s, uint64_t x, uint64_t y );
 
 } // end namespace
 
