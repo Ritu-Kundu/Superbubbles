@@ -28,19 +28,19 @@ link_directories(lib)
 # sources #
 ###########
 set(SOURCE_FILES
-src/CandidateList.cpp
-src/CandidateList.hpp
-src/DAG.cpp
-src/DAG.hpp
-src/DetectSuperBubble.cpp
-src/DetectSuperBubble.hpp
-src/Graph.cpp
-src/Graph.hpp
-src/helper.cpp
-src/helperDefs.hpp
-src/Subgraph.cpp
-src/Subgraph.hpp
-src/supbub.cpp)
+        src/algo_linear/CandidateList.cpp
+        src/algo_linear/CandidateList.hpp
+        src/algo_linear/DAG.cpp
+        src/algo_linear/DAG.hpp
+        src/algo_linear/DetectSuperBubble.cpp
+        src/algo_linear/DetectSuperBubble.hpp
+        src/algo_linear/Graph.cpp
+        src/algo_linear/Graph.hpp
+        src/algo_linear/helper.cpp
+        src/algo_linear/helperDefs.hpp
+        src/algo_linear/Subgraph.cpp
+        src/algo_linear/Subgraph.hpp
+        src/algo_linear/supbub.cpp)
 
 set(TEST_FILES
 tests/test_main.cpp)
