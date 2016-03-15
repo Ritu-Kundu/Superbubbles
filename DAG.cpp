@@ -70,7 +70,7 @@ namespace supbub{
   DAG::prepareForSupBub(){
 
     /* Compute topological order */
-    invOrd = new VERTEXID[_numVertices];
+    invOrd = new int64_t[_numVertices];
     fillTopologicalOrder();
 
     /* Compute ordD */
@@ -100,7 +100,7 @@ namespace supbub{
     }
   }
 
-  VERTEXID
+  int64_t
   DAG::vertexAtOrder(int64_t o){
     if (o < _numVertices && o >= 0) {
       return invOrd[o];
@@ -131,7 +131,7 @@ namespace supbub{
 
   void
   DAG::fillTopologicalOrder(){
-    std::stack<VERTEXID> ordStack;
+    std::stack<int64_t> ordStack;
 
     bool* visited = new bool[_numVertices];
     std::fill_n( visited, _numVertices, 0 ); // set to false
@@ -152,12 +152,12 @@ namespace supbub{
   }
 
   void
-  DAG::topologicalSort(VERTEXID v, bool* visited, std::stack<VERTEXID> &ordStack){
+  DAG::topologicalSort(int64_t v, bool* visited, std::stack<int64_t> &ordStack){
     // Mark the current node as visited.
     visited[v] = true;
  
     // Recursive call for all the children of this vertex
-    VERTEXID_LIST_ITERATOR i;
+    int64_t_LIST_ITERATOR i;
     if (! _adjList[v].empty()) {
       for (i = _adjList[v].begin(); i != _adjList[v].end(); ++i) {
 	if (!visited[*i]){
@@ -174,8 +174,8 @@ namespace supbub{
 
   void
   DAG::prepareCandListNPvsEntrance(){
-    VERTEXID_LIST_ITERATOR i;  
-    VERTEXID ver;
+    int64_t_LIST_ITERATOR i;  
+    int64_t ver;
     bool exitDone, entranceDone;
     Candidate* pvsEnt = nullptr;
     for (int64_t ord = 0; ord < _numVertices; ++ord) {  // in topo-order
@@ -213,7 +213,7 @@ namespace supbub{
   void
   DAG::prepareOutParNOutChildRMQ(){   
 
-    VERTEXID_LIST_ITERATOR i;
+    int64_t_LIST_ITERATOR i;
     int64_t minOrd, maxOrd;
 
     for (int64_t v = 0; v < _numVertices; ++v){
@@ -243,12 +243,12 @@ namespace supbub{
     // prepare for RMQ
 
     // create a vector of length len and initialize it with 0s
-    sdsl::int_vector<64> v(_numVertices , 0 ); 
+    sdsl::int_vector<> v(_numVertices , 0 ); 
     for(int64_t i = 0; i < _numVertices; i++){
       v[i] = outParent[i];
     }
 
-    rmqOutParent = new sdsl::rmq_succinct_sct<64>(&v);
+    rmqOutParent = new sdsl::rmq_succinct_sct<>(&v);
 
     for(int64_t i = 0; i < _numVertices; i++){
       v[i] = outChild[i];

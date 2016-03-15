@@ -22,11 +22,11 @@ namespace supbub {
   Graph::Graph(int64_t n) {
     _numVertices = n;
     _numEdges = 0;
-    _adjList = new VERTEXID_LIST[n];
-    std::fill_n(_adjList, _numVertices, VERTEXID_LIST{}); // set to empty list
+    _adjList = new int64_t_LIST[n];
+    std::fill_n(_adjList, _numVertices, int64_t_LIST{}); // set to empty list
 
-   _parentList = new VERTEXID_LIST[_numVertices];
-   std::fill_n(_parentList, _numVertices, VERTEXID_LIST{}); // set to empty list
+   _parentList = new int64_t_LIST[_numVertices];
+   std::fill_n(_parentList, _numVertices, int64_t_LIST{}); // set to empty list
 
 
     _inDegree = new int64_t[_numVertices];
@@ -55,19 +55,19 @@ namespace supbub {
   }
 
 
-  VERTEXID_LIST&
-  Graph::getChildren(VERTEXID v){
+  int64_t_LIST&
+  Graph::getChildren(int64_t v){
     return  _adjList[v];
   }
 
 
-  VERTEXID_LIST&
-  Graph::getParents(VERTEXID v){
+  int64_t_LIST&
+  Graph::getParents(int64_t v){
     return _parentList[v];
   }
 
   int64_t
-  Graph::getInDegree(VERTEXID v){
+  Graph::getInDegree(int64_t v){
     if (v < _numVertices && v >= 0) {
       return _inDegree[v];
     } else {
@@ -77,7 +77,7 @@ namespace supbub {
   }
 
   int64_t
-  Graph::getOutDegree(VERTEXID v){
+  Graph::getOutDegree(int64_t v){
     if (v < _numVertices  && v >= 0) {
       return _outDegree[v];
     } else {
@@ -136,7 +136,7 @@ namespace supbub {
 
     // Call the recursive helper function to find strongly
     // connected components in DFS tree with vertex 'i'
-    for (VERTEXID i = 0; i < _numVertices; ++i) {
+    for (int64_t i = 0; i < _numVertices; ++i) {
       if (disc[i] == 0) {
 	findScc(i, disc, low, st, stacked, tick, currentScc, scc);
       }
@@ -153,7 +153,7 @@ namespace supbub {
 
   void 
   Graph::printGraph(){
-    VERTEXID_LIST_ITERATOR i;
+    int64_t_LIST_ITERATOR i;
     for(int64_t v=0; v <_numVertices; ++v){
       std::cout << std::endl << v << "-> ";
       for (i = _adjList[v].begin(); i != _adjList[v].end(); ++i) {
@@ -165,6 +165,8 @@ namespace supbub {
   //////////////////////// private ////////////////////////
 
 
+  //TODO this may require an int64_t as the final pointer.
+  // it seems to be causing compiler errors
   void 
   Graph::findScc(int64_t u, int64_t* disc, int64_t* low, std::stack<int64_t> *st,
 		 bool* stacked, int64_t& tick, int64_t& currentScc, int64_t* scc) {
@@ -175,7 +177,7 @@ namespace supbub {
     stacked[u] = true;
  
     // Go through all vertices adjacent to this
-    VERTEXID_LIST_ITERATOR i;
+    int64_t_LIST_ITERATOR i;
     for (i = _adjList[u].begin(); i != _adjList[u].end(); ++i) {
       int64_t v = *i;  // v is current adjacent of 'u'
       // If v is not visited yet, then recur for it

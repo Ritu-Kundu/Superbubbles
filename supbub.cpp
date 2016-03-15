@@ -18,21 +18,14 @@
 
 #include <fstream>
 #include <cstdlib>
-#include <cstdint>
-#include <stdio.h>
-#include <iterator>
-#include <list>
-#include <stack>
-#include <string>
-#include <iostream>
 
+#include "globalDefs.hpp"
 #include "Graph.hpp"
 #include "DetectSuperBubble.hpp"
 #include "helperDefs.hpp"
 
 
 using namespace supbub;
-using namespace std;
 
 int main(int argc, char **argv){
   
@@ -63,7 +56,6 @@ int main(int argc, char **argv){
   }
 
 
-
   /* List for results */
   DetectSuperBubble::SUPERBUBBLE_LIST superBubblesList{};
 
@@ -72,8 +64,6 @@ int main(int argc, char **argv){
   DetectSuperBubble dsb;
   dsb.find(graph, superBubblesList); 
   double end = gettime();
-
- cerr << "Superbubs found" << endl;
 
   /* Write output */
   std::ofstream outfile(flags.output_filename);

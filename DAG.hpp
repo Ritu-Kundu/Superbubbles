@@ -81,14 +81,14 @@ namespace supbub{
      * It is the second-last vertex.
      *
      */
-    VERTEXID getSourceId();
+    int64_t getSourceId();
 
      /** Returns the local-id of the terminal/sink(r') of the graph.
      *
      * It is the last vertex.
      *
      */
-    VERTEXID getTerminalId();
+    int64_t getTerminalId();
 
 
     /** Prepare the data-structors required for detecting superbubbles
@@ -107,12 +107,12 @@ namespace supbub{
      * @param v vertex whose previous entrance is to be found
      * @return pointer to previous entrance for v or nullptr if v is invalid
      */
-    Candidate* previousEntrance(VERTEXID v);
+    Candidate* previousEntrance(int64_t v);
 
 
     /** Returns the vertex having the given topological order.
      */
-    VERTEXID vertexAtOrder(int64_t o);
+    int64_t vertexAtOrder(int64_t o);
 
     /** Returns the maximum OutChild in the given range .
      */
@@ -129,7 +129,7 @@ namespace supbub{
     /** array of ids of vertices indexed by topological order
      * invOrd[x] = y => vertex y has x as topological order
      */
-    VERTEXID* invOrd;
+    int64_t* invOrd;
 
     /** array of outParent
      * OutParent[ordD[v]] = ordD[u1 ] such that
@@ -174,9 +174,9 @@ namespace supbub{
      * @param visited array marking the visisted vertices.
      * @param ordStack stack storing the result.
      */
-    void topologicalSort(VERTEXID currentVertex, 
+    void topologicalSort(int64_t currentVertex, 
 			 bool* visited, 
-			 std::stack<VERTEXID> &ordStack);
+			 std::stack<int64_t> &ordStack);
 
  
     /** Genertaes Candidate List and fills pvsEntrance array.

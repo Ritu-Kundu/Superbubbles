@@ -18,15 +18,9 @@
 
 #include <sys/time.h>
 #include <getopt.h>
-#include <cstdint>
-#include <stdio.h>
-#include <iterator>
-#include <list>
-#include <stack>
-#include <string>
-#include <iostream>
 
 
+#include "globalDefs.hpp"
 
 namespace supbub{
 struct InputFlags{

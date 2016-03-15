@@ -19,14 +19,8 @@
 
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
-#include <cstdint>
-#include <stdio.h>
-#include <iterator>
-#include <list>
-#include <stack>
-#include <string>
-#include <iostream>
 
+#include "globalDefs.hpp"
 #include "helperDefs.hpp"
 
 namespace supbub{
@@ -47,15 +41,15 @@ namespace supbub{
    */
 
    /** type for vertex */
-    typedef int64_t VERTEXID;
+    typedef int64_t int64_t;
 
     
     /** type for list of ids of vertices */
-    typedef std::list<VERTEXID> VERTEXID_LIST;
+    typedef std::list<int64_t> int64_t_LIST;
 
  
     /** type for iterator of list of vertices */
-    typedef VERTEXID_LIST::iterator VERTEXID_LIST_ITERATOR;
+    typedef int64_t_LIST::iterator int64_t_LIST_ITERATOR;
 
 
   class Graph{
@@ -81,7 +75,7 @@ namespace supbub{
      * @param v given vertex-id.
      * @return reference to list of ids of child vertices.
      */
-    VERTEXID_LIST& getChildren(VERTEXID v);
+    int64_t_LIST& getChildren(int64_t v);
 
     /** Returns list of parents of the vertex.
      * Assumes v is valid.
@@ -89,15 +83,15 @@ namespace supbub{
      * @return reference to list of ids of parent vertices
      *         
      */
-     VERTEXID_LIST& getParents(VERTEXID v);
+     int64_t_LIST& getParents(int64_t v);
 
     /** Returns indegree of the vertex with given vertex-id (if v exists, -1 otherwise).
      */
-    int64_t getInDegree(VERTEXID v);
+    int64_t getInDegree(int64_t v);
 
     /** Returns outdegree of the vertex with given vertex-id (if v exists, -1 otherwise).
      */
-    int64_t getOutDegree(VERTEXID v);
+    int64_t getOutDegree(int64_t v);
 
 
 
@@ -105,7 +99,7 @@ namespace supbub{
      * @param u id of source vertex of edge
      * @param v id of terminal vertex of edge
      */
-    void addEdge(VERTEXID u, VERTEXID v);
+    void addEdge(int64_t u, int64_t v);
 
     /** Fills the given array with ids of the subgraphs(coresponding to 'scc') which corresponding vertex belongs to.
      * 
@@ -134,12 +128,12 @@ namespace supbub{
     /** adjacency list
      *  it is the pointer to an array where an element at index say 'u' is a pointer to a list of ids 'v' of all vertices such that there is an edge from the vertex with id u to the vertex with id v.
      */
-    VERTEXID_LIST* _adjList;
+    int64_t_LIST* _adjList;
 
     /** parent list
      *  it is the pointer to an array where an element at index say 'u' is a pointer to a list of ids 'v' of all vertices such that there is an edge from the vertex with id v to the vertex with id u.
      */
-    VERTEXID_LIST* _parentList;
+    int64_t_LIST* _parentList;
 
     /** array of indegree of each vertex
      *  it is the pointer to an array where an element at index say 'u' containes n where n is indegree of the vertexwith id  u.

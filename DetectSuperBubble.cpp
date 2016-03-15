@@ -31,13 +31,13 @@ namespace supbub {
 
     /* Preprocess before partitioning */
     std::vector<Subgraph*> subgraphs;
-    int64_t* globalToLocalIdMap = new VERTEXID[numVertices]; // Keep track of local-ids given to vertices in each subgraph
+    int64_t* globalToLocalIdMap = new int64_t[numVertices]; // Keep track of local-ids given to vertices in each subgraph
     
     int64_t* sizeSubgraph = new int64_t[numSubgraphs]; // Keep track of size of each subgraph 
     std::fill_n(sizeSubgraph, numSubgraphs, 0); // set to 0
    
     // Calculate size of ssc/subgraphs, providing local-id to each vertex in that subgraph
-    for(VERTEXID v=0; v < numVertices; ++v) {
+    for(int64_t v=0; v < numVertices; ++v) {
       globalToLocalIdMap[v] = (sizeSubgraph[scc[v]])++;   
     }
 
@@ -48,12 +48,12 @@ namespace supbub {
     }
 
     /* Start PartitionGraph */
-    VERTEXID_LIST_ITERATOR i;
+    int64_t_LIST_ITERATOR i;
     bool isOutOtherScc, isInOtherScc;
-    for(VERTEXID v=0; v < numVertices; ++v) {
+    for(int64_t v=0; v < numVertices; ++v) {
       Subgraph* sg = subgraphs[scc[v]];
       sg->setGlobalId(globalToLocalIdMap[v], v); // set reverse id map for this vertex
-      VERTEXID_LIST& children = g.getChildren(v);
+      int64_t_LIST& children = g.getChildren(v);
       if (! children.empty()) { // out-degree non-zero
 	isOutOtherScc = false;
 	for (i = children.begin(); i != children.end(); ++i) {
@@ -72,7 +72,7 @@ namespace supbub {
       }
 
       // add edges r-v
-      VERTEXID_LIST& parents = g.getParents(v);
+      int64_t_LIST& parents = g.getParents(v);
       if (! parents.empty()) {
 	for (i = parents.begin(); i != parents.end(); ++i) {
 	  int64_t u = *i;
@@ -99,8 +99,8 @@ namespace supbub {
     int64_t DAGSize = sg0->numVertices();
     DAG* dag0 = new DAG(DAGSize);
 
-    for (VERTEXID v = 0; v < DAGSize; ++v) {
-      VERTEXID_LIST& children = sg0->getChildren(v);
+    for (int64_t v = 0; v < DAGSize; ++v) {
+      int64_t_LIST& children = sg0->getChildren(v);
       if (! children.empty()) { // out-degree non-zero
 	for (i = children.begin(); i != children.end(); ++i) {	
 	  dag0->addEdge(v, *i); // add edge v-u	 
@@ -108,16 +108,16 @@ namespace supbub {
       }
     }
 
-    VERTEXID* superBubblesArray = new VERTEXID[DAGSize];
+    int64_t* superBubblesArray = new int64_t[DAGSize];
     std::fill_n(superBubblesArray,DAGSize, -1); // set to -1
     // find superbubles
     superBubble(dag0, superBubblesArray);
 
     // Filter out 'unreal' superbubbles
-    VERTEXID lastPossibleS = DAGSize -2; // (last two vertices are dummu source and sink)
-    VERTEXID dumyTerminal = dag0->getTerminalId();
-    for (VERTEXID s=0; s < lastPossibleS; ++s) {
-      VERTEXID t = superBubblesArray[s];
+    int64_t lastPossibleS = DAGSize -2; // (last two vertices are dummu source and sink)
+    int64_t dumyTerminal = dag0->getTerminalId();
+    for (int64_t s=0; s < lastPossibleS; ++s) {
+      int64_t t = superBubblesArray[s];
       if ( t!= -1 && t!=dumyTerminal) {
 	superBubblesList.push_back(SuperBubble{sg0->getGlobalId(s), sg0->getGlobalId(t)});
       }
@@ -136,28 +136,28 @@ namespace supbub {
 
       // Array containing result: superBubblesArray[x] = y => <x,y> is a superbubble.
       // If x is not an entrance to any superbubble, superBubblesArray[x] = -1 
-      superBubblesArray = new VERTEXID[dag->numVertices()];
+      superBubblesArray = new int64_t[dag->numVertices()];
       std::fill_n(superBubblesArray,dag->numVertices(), -1); // set to -1
 
       superBubble(dag,superBubblesArray);
 
       // Filter out 'unreal' superbubbles
-      VERTEXID lastPossibleS = sg->getOffset();
-      VERTEXID dumyTerminal = dag->getTerminalId();
-      for (VERTEXID s=0; s < lastPossibleS; ++s) { // we will only consider u' and not u'' or r' or r''
-	VERTEXID t = superBubblesArray[s];
+      int64_t lastPossibleS = sg->getOffset();
+      int64_t dumyTerminal = dag->getTerminalId();
+      for (int64_t s=0; s < lastPossibleS; ++s) { // we will only consider u' and not u'' or r' or r''
+	int64_t t = superBubblesArray[s];
 	if ( t!= -1 && t!=dumyTerminal) { // s is entrance of possible 'real' superbubble
 
 	  if (sg->isDuplicateId(t)) { // It corresponds to <s', t''>
-	    VERTEXID realT = sg->getOriginalId(t);
+	    int64_t realT = sg->getOriginalId(t);
 	    if (sg->isAncestor(realT, s)) { // if t is ancesstor of s, <s, t> is superbubble
 	      superBubblesList.push_back(SuperBubble{sg->getGlobalId(s), sg->getGlobalId(realT)});
  
 	    }
 	  }
 	  else { // it corresponds to <s', t'>
-	    VERTEXID s2 = sg->getDuplicateId(s);
-	    VERTEXID t2 = sg->getDuplicateId(t);
+	    int64_t s2 = sg->getDuplicateId(s);
+	    int64_t t2 = sg->getDuplicateId(t);
 	    if (superBubblesArray[s2] == t2) { // if <s'', t''> is also superbubble, then <s, t> is superbubble
 	      superBubblesList.push_back(SuperBubble{sg->getGlobalId(s), sg->getGlobalId(t)});
 	    }
@@ -175,7 +175,7 @@ namespace supbub {
  //////////////////////// private //////////////////////// 
 
   void 
-  DetectSuperBubble::superBubble(DAG* dag, VERTEXID* superBubblesArray){ 
+  DetectSuperBubble::superBubble(DAG* dag, int64_t* superBubblesArray){ 
     /* mark is used by reportSuperBubble() to keep track of the 
      * entrance candidates which have already been checked prior 
      * to the current exit position being considered. 
@@ -200,7 +200,7 @@ namespace supbub {
  
 
   void 
-  DetectSuperBubble::reportSuperBubble(DAG* dag, int64_t* mark, Candidate* start, Candidate* exit, VERTEXID* superBubblesArray){
+  DetectSuperBubble::reportSuperBubble(DAG* dag, int64_t* mark, Candidate* start, Candidate* exit, int64_t* superBubblesArray){
     // sanity check
     if (start == nullptr || exit == nullptr || dag->ordD[start->vertexId] >= dag->ordD[exit->vertexId]){ 
       dag->candidates.delete_tail();

@@ -18,7 +18,8 @@
 
 #ifndef CANDIDATELIST_HPP
 #define CANDIDATELIST_HPP
-#include <stdint.h>
+
+#include "globalDefs.hpp"
 
 namespace supbub{
 

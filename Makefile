@@ -1,16 +1,10 @@
-MF=Makefile
- 
-CXX=g++
- 
-CXXFLAGS= -msse3 -g -D_USE_32 -std=c++11 -fopenmp -O3 -fomit-frame-pointer -funroll-loops 
- 
-LFLAGS= -I. -L. -lsupbub -lsdsl
-
-LIB=libsupbub.a
-EXE=supbub
-SRC=supbub.cpp Graph.cpp DetectSuperBubble.cpp Subgraph.cpp DAG.cpp CandidateList.cpp helper.cpp
-HD=Graph.hpp DetectSuperBubble.hpp Subgraph.hpp DAG.hpp CandidateList.hpp helperDefs.hpp Makefile
-OBJ=$(SRC:.cpp=.o)
+MF=Makefile 
+CC=     g++
+CFLAGS= -g -msse3 -fopenmp -O3 -fomit-frame-pointer -funroll-loops 
+LFLAGS= -std=c++11 -O3 -DNDEBUG -lsdsl
+EXE=    supbub
+SRC=    supbub.cpp Graph.cpp DetectSuperBubble.cpp Subgraph.cpp DAG.cpp CandidateList.cpp helper.cpp
+HD=     globalDefs.hpp Graph.hpp DetectSuperBubble.hpp Subgraph.hpp DAG.hpp CandidateList.hpp helperDefs.hpp Makefile
  
 # 
 # No need to edit below this line 
@@ -18,38 +12,26 @@ OBJ=$(SRC:.cpp=.o)
  
 .SUFFIXES: 
 .SUFFIXES: .cpp .o 
-
  
-all: $(LIB) $(EXE)
+OBJ=    $(SRC:.cpp=.o) 
  
-DetectSuperBubble.o: DetectSuperBubble.cpp DetectSuperBubble.hpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
+.cpp.o: 
+	$(CC) $(CFLAGS)-c $(LFLAGS) $< 
+ 
+lib: $(OBJ)
+	ar -rs libsupbub.a *.o
 
-Subgraph.o: Subgraph.cpp Subgraph.hpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-DAG.o: DAG.cpp DAG.hpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-CandidateList.o: CandidateList.cpp CandidateList.hpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-helper.o: helper.cpp helperDefs.hpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-Graph.o: Graph.cpp Graph.hpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-supbub.o: supbub.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
-$(LIB): DetectSuperBubble.o Subgraph.o DAG.o CandidateList.o helper.o Graph.o
-	ar -rs $@ $^
-
-$(EXE): $(LIB) $(OBJ)
-	$(CXX) $(CXXFLAGS) -o $@ supbub.o $(LFLAGS)
-
-$(OBJ): $(MF) $(HD)
-
-clean:
+all:    $(EXE) 
+ 
+$(EXE): $(OBJ) 
+	$(CC) $(CFLAGS) -o $@ $(OBJ) $(LFLAGS) 
+ 
+$(OBJ): $(MF) $(HD) 
+ 
+clean: 
 	rm -f $(OBJ) $(EXE) *~
+
+clean-all: 
+	rm -f $(OBJ) $(EXE) *~
+	rm -r libsdsl
+	rm -r sdsl-lite
