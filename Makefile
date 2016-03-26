@@ -1,7 +1,7 @@
 MF=Makefile 
 CC= g++
-CFLAGS= -g -msse3 -fopenmp -O3 -fomit-frame-pointer -funroll-loops 
-LFLAGS= -std=c++11 -O3 -DNDEBUG -lsdsl
+CFLAGS= -g -msse3 -fopenmp -O3 -fomit-frame-pointer -funroll-loops -m64
+LFLAGS= -std=c++11 -DNDEBUG -lsdsl
 EXE= supbub
 SRC= supbub.cpp Graph.cpp DetectSuperBubble.cpp Subgraph.cpp DAG.cpp CandidateList.cpp helper.cpp
 HD=  globalDefs.hpp Graph.hpp DetectSuperBubble.hpp Subgraph.hpp DAG.hpp CandidateList.hpp helperDefs.hpp Makefile
@@ -16,7 +16,7 @@ HD=  globalDefs.hpp Graph.hpp DetectSuperBubble.hpp Subgraph.hpp DAG.hpp Candida
 OBJ=    $(SRC:.cpp=.o) 
  
 .cpp.o: 
-	$(CC) $(CFLAGS)-c $(LFLAGS) $< 
+	$(CC) $(CFLAGS)	-c $(LFLAGS) $< 
  
 lib: $(OBJ)
 	ar rcu libsupbub.a *.o
