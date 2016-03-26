@@ -19,7 +19,7 @@ OBJ=    $(SRC:.cpp=.o)
 	$(CC) $(CFLAGS)-c $(LFLAGS) $< 
  
 lib: $(OBJ)
-	ar -rs libsupbub.a *.o
+	ar rs libsupbub.a *.o
 
 all:    $(EXE) 
  
