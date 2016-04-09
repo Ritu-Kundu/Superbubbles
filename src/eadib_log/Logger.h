@@ -6,7 +6,7 @@
    License: GNUv3 Public License
    (c) Copyright E. A. Davison 2015
 
-   Author: E. A. Davison (A
+   Author: E. A. Davison
 
    Description: Logger component of the EADlib library
    Note:        Call the macros below with any number of arguments separated with comas.
