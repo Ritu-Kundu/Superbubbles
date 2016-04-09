@@ -41,27 +41,27 @@ set(SOURCE_FILES
         src/algo_linear/supbub.cpp)
 
 set( EADLIB_LOGGER
-        src/eadib_log/Logger.h
-        src/eadib_log/log_configuration/OutputConfiguration.h
-        src/eadib_log/log_formatters/Formatter_Terminal.h
-        src/eadib_log/log_formatters/Formatter.h
-        src/eadib_log/log_configuration/TimeStamp.h
-        src/eadib_log/log_configuration/LogConfig.h
-        src/eadib_log/log_outputs/LogOutput.h
-        src/eadib_log/log_configuration/LogLevel_types.h
-        src/eadib_log/log_outputs/LogOutput_FileAppend.h
-        src/eadib_log/log_outputs/LogOutput_FileOverwrite.h
-        src/eadib_log/log_outputs/LogOutput_FileNew.h
-        src/eadib_log/log_formatters/Formatter_types.h
-        src/eadib_log/log_outputs/LogOutput_types.h
-        src/eadib_log/log_outputs/LogOutput_Terminal.h
+        include/eadib_log/Logger.h
+        include/eadib_log/log_configuration/OutputConfiguration.h
+        include/eadib_log/log_formatters/Formatter_Terminal.h
+        include/eadib_log/log_formatters/Formatter.h
+        include/eadib_log/log_configuration/TimeStamp.h
+        include/eadib_log/log_configuration/LogConfig.h
+        include/eadib_log/log_outputs/LogOutput.h
+        include/eadib_log/log_configuration/LogLevel_types.h
+        include/eadib_log/log_outputs/LogOutput_FileAppend.h
+        include/eadib_log/log_outputs/LogOutput_FileOverwrite.h
+        include/eadib_log/log_outputs/LogOutput_FileNew.h
+        include/eadib_log/log_formatters/Formatter_types.h
+        include/eadib_log/log_outputs/LogOutput_types.h
+        include/eadib_log/log_outputs/LogOutput_Terminal.h
         )
 
 set(GENOME_MAKER
-        src/genomeMaker/gmaker.cpp)
+        src/genomeMaker/gmaker.cpp src/genomeMaker/Reader.cpp src/genomeMaker/Reader.h src/genomeMaker/Creator.cpp src/genomeMaker/Creator.h)
 
 set(TEST_FILES
-        tests/test_main.cpp)
+        tests/test_main.cpp tests/genomeMaker/Creator_tests.cpp)
 
 ######################
 # Artifacts produced #
