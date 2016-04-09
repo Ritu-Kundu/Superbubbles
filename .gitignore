@@ -1,5 +1,6 @@
 /lib
-/include
+/include/sdsl
+/include/*.h
 
 ### C++ template
 # Compiled Object files
