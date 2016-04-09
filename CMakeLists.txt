@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.2)
 project(Superbubbles)
 
 #// Project flags
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_C_FLAG "$CMAKE_C_FLAGE} -D_USE_64")
-set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++11 -pthread")
+set(CMAKE_CXX_FLAGS " ${CMAKE_CXX_FLAGS} -std=c++14 -pthread")
 #// Setting the build output to ./build
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build")
 
@@ -15,14 +17,9 @@ include_directories(${GTEST_INCLUDE_DIRS})
 #// SDSL library
 include_directories(include)
 include_directories(include/sdsl)
-find_library(ead_logger lib)
 find_library(sdsl lib)
 find_library(divsufsort lib)
 link_directories(lib)
-
-#// Boost (for logging)
-#find_package(Boost REQUIRED)
-#include_directories(${BOOST_INCLUDE_DIRS})
 
 ###########
 # sources #
@@ -34,6 +31,7 @@ set(SOURCE_FILES
         src/algo_linear/DAG.hpp
         src/algo_linear/DetectSuperBubble.cpp
         src/algo_linear/DetectSuperBubble.hpp
+        src/algo_linear/globalDefs.hpp
         src/algo_linear/Graph.cpp
         src/algo_linear/Graph.hpp
         src/algo_linear/helper.cpp
@@ -42,26 +40,60 @@ set(SOURCE_FILES
         src/algo_linear/Subgraph.hpp
         src/algo_linear/supbub.cpp)
 
+set( EADLIB_LOGGER
+        src/eadib_log/Logger.h
+        src/eadib_log/log_configuration/OutputConfiguration.h
+        src/eadib_log/log_formatters/Formatter_Terminal.h
+        src/eadib_log/log_formatters/Formatter.h
+        src/eadib_log/log_configuration/TimeStamp.h
+        src/eadib_log/log_configuration/LogConfig.h
+        src/eadib_log/log_outputs/LogOutput.h
+        src/eadib_log/log_configuration/LogLevel_types.h
+        src/eadib_log/log_outputs/LogOutput_FileAppend.h
+        src/eadib_log/log_outputs/LogOutput_FileOverwrite.h
+        src/eadib_log/log_outputs/LogOutput_FileNew.h
+        src/eadib_log/log_formatters/Formatter_types.h
+        src/eadib_log/log_outputs/LogOutput_types.h
+        src/eadib_log/log_outputs/LogOutput_Terminal.h
+        )
+
+set(GENOME_MAKER
+        src/genomeMaker/gmaker.cpp)
+
 set(TEST_FILES
-tests/test_main.cpp)
+        tests/test_main.cpp)
 
 ######################
 # Artifacts produced #
 ######################
+add_library(
+        ead_logger
+        STATIC
+        ${EADLIB_LOGGER})
+
 add_executable(
-SuperBubbles
-${SOURCE_FILES}
+        SuperBubbles
+        ${SOURCE_FILES}
 )
 
 add_executable(
-UnitTests
-${TEST_FILES}
+        GenomeMaker
+        ${GENOME_MAKER}
+)
+
+add_executable(
+        UnitTests
+        ${TEST_FILES}
 )
 
 ###########
 # Linking #
 ###########
-target_link_libraries(UnitTests gtest)
+SET_TARGET_PROPERTIES(ead_logger PROPERTIES LINKER_LANGUAGE CXX)
+
+target_link_libraries(UnitTests gtest )
 add_test(UnitTests ${TEST_FILES})
 
-target_link_libraries(SuperBubbles ead_logger sdsl divsufsort)
+target_link_libraries(SuperBubbles sdsl divsufsort ead_logger)
+
+target_link_libraries(GenomeMaker ead_logger)

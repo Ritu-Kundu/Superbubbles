@@ -54,6 +54,14 @@ namespace eadlib {
         // Logger class method implementations
         //-----------------------------------------------------------------------------------------------------------------
         /**
+         * Logger Constructor
+         */
+        Logger::Logger() :
+            _number_of_entries( 0 ),
+            _config( std::make_unique<eadlib::log::LogConfig>( "log_config.cfg" ) )
+        {}
+
+        /**
          * Prints log message
          * @param args Arguments in message
          */
@@ -81,6 +89,18 @@ namespace eadlib {
             _log_stream << head;
             print_<event_type>( tail... );
         };
+
+        /**
+         * Gets the current log entry number
+         * @return Entry number
+         */
+        std::string Logger::getEntryNumber() {
+            std::stringstream ss;
+            ss.fill( '0' );
+            ss.width( 7 );
+            ss << this->_number_of_entries;
+            return ss.str();
+        }
     }
 }
 

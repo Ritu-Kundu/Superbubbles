@@ -12,7 +12,6 @@
 #include "LogLevel_types.h"
 #include "../log_outputs/LogOutput_types.h"
 #include "../log_formatters/Formatter_types.h"
-#include "../../exceptions/duplication.h"
 
 namespace eadlib {
     namespace log {
@@ -121,7 +120,6 @@ namespace eadlib {
          * @return Success
          */
         bool LogConfig::loadConfigLine( const std::string &line, const size_t &line_number ) {
-            std::cout << "Looking at: " << line << std::endl;
             std::string cfg_line = line;
             cfg_line.erase( std::remove_if( cfg_line.begin(), cfg_line.end(), isspace ), cfg_line.end() ); //loose any whitespace in the line
             std::regex rx_comment_line ( "//(.*?)"); //Regex for comment line
