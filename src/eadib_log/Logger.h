@@ -1,6 +1,18 @@
-//
-// Created by Alwlyan on 21/06/2015.
-//
+/**
+   Component Name:  EADlib.logger
+   Status:          Version 1.0 Release 1
+   Language:        C++14
+
+   License: GNUv3 Public License
+   (c) Copyright E. A. Davison 2015
+
+   Author: E. A. Davison (A
+
+   Description: Logger component of the EADlib library
+   Note:        Call the macros below with any number of arguments separated with comas.
+                e.g.: LOG_ERROR( "Something happened: ", var0, ", ", var1 );
+                Outputs can be specified in the log_config.cfg file which is generated on first run.
+**/
 
 #ifndef EADLIB_LOGGER_H
 #define EADLIB_LOGGER_H
@@ -88,7 +100,7 @@ namespace eadlib {
         template<eadlib::log::LogLevel_types::Type event_type, typename H, typename...T> void Logger::print_( H head, T...tail ) {
             _log_stream << head;
             print_<event_type>( tail... );
-        };
+        }
 
         /**
          * Gets the current log entry number
