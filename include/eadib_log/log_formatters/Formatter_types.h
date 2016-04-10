@@ -19,7 +19,7 @@ namespace eadlib {
              * @param type Formatter::Type
              * @return Description
              */
-            static std::string getFormatterDescription( const Type &type ) {
+            inline static std::string getFormatterDescription( const Type &type ) {
                 switch( type ) {
                     case Type::TERMINAL:
                         return "TERMINAL";
@@ -32,7 +32,7 @@ namespace eadlib {
              * @return Type for the description
              * @exception throws std::invalid_argument when a descriptor doesn't match any of the formatter types
              */
-            static Type getDescriptionType( const std::string &description ) {
+            inline static Type getDescriptionType( const std::string &description ) {
                 if( std::regex_match( description, std::regex( "TERMINAL" ))) {
                     return Type::TERMINAL;
                 }

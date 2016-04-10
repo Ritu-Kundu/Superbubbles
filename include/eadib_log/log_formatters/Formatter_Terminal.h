@@ -29,7 +29,7 @@ namespace eadlib {
          * @param msg       Log message
          * @return formatted output string stream
          */
-        std::string Formatter_Terminal::formatMsg( const TimeStamp &ts, const uint32_t &msgNum, const LogLevel_types::Type &level, const std::string &msg ) {
+        inline std::string Formatter_Terminal::formatMsg( const TimeStamp &ts, const uint32_t &msgNum, const LogLevel_types::Type &level, const std::string &msg ) {
             std::stringstream line;
             line << "[";
             line << formatMsgNumber( msgNum );
@@ -48,7 +48,7 @@ namespace eadlib {
          * @param msgNum Message session number
          * @return Formatted string
          */
-        std::string Formatter_Terminal::formatMsgNumber( const uint32_t &msgNum ) {
+        inline std::string Formatter_Terminal::formatMsgNumber( const uint32_t &msgNum ) {
             std::ostringstream oss;
             oss.fill( '0' );
             oss.width( 7 );
@@ -61,7 +61,7 @@ namespace eadlib {
          * @param level Log level
          * @return Formatted string
          */
-        std::string Formatter_Terminal::formatMsgLevel( const LogLevel_types::Type &level ) {
+        inline std::string Formatter_Terminal::formatMsgLevel( const LogLevel_types::Type &level ) {
             switch( level ) {
                 case LogLevel_types::Type::FATAL:
                     return "|--FATAL--| ";

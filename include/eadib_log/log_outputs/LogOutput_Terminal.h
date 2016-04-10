@@ -29,7 +29,7 @@ namespace eadlib {
      * Sets Console name
      * @param name Console name
      */
-    void eadlib::log::LogOutput_Terminal::open_ostream( const std::string &name ) {
+    inline void eadlib::log::LogOutput_Terminal::open_ostream( const std::string &name ) {
         this->_console_name = name;
     }
 
@@ -38,7 +38,7 @@ namespace eadlib {
      * Writes to the console
      * @param msg Message to write
      */
-    void eadlib::log::LogOutput_Terminal::write( const std::string &msg ) {
+    inline void eadlib::log::LogOutput_Terminal::write( const std::string &msg ) {
         std::cout << msg << std::endl;
     }
 }

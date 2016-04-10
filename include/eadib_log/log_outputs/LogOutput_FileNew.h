@@ -29,7 +29,7 @@ namespace eadlib {
         /**
          * Destructor
          */
-        LogOutput_FileNew::~LogOutput_FileNew() {
+        inline LogOutput_FileNew::~LogOutput_FileNew() {
             if( _output_stream ) {
                 close_ostream();
             }
@@ -39,7 +39,7 @@ namespace eadlib {
          * Opens output stream
          * @param file_name Name of the file
          */
-        void LogOutput_FileNew::open_ostream( const std::string &file_name ) {
+        inline void LogOutput_FileNew::open_ostream( const std::string &file_name ) {
             std::string formatted_name = file_name + "_" + TimeStamp().getTimeStamp( "%Y%m%d-%H%M%S" ) + ".txt";
             _output_stream->open( formatted_name.c_str(), std::ios::out | std::ios::ate | std::ios::app ); //std::ios_base::binary | std::ios_base::out
             if( !_output_stream->is_open() ) {
@@ -50,7 +50,7 @@ namespace eadlib {
         /**
          * Closes output stream
          */
-        void LogOutput_FileNew::close_ostream() {
+        inline void LogOutput_FileNew::close_ostream() {
             if( _output_stream ) {
                 _output_stream->close();
             }
@@ -60,7 +60,7 @@ namespace eadlib {
          * Writes to the output stream
          * @param msg Message to write
          */
-        void LogOutput_FileNew::write( const std::string &msg ) {
+        inline void LogOutput_FileNew::write( const std::string &msg ) {
             (*_output_stream ) << msg << std::endl;
         }
     }

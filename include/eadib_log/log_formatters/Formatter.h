@@ -7,8 +7,8 @@
 
 #include <stdint.h>
 #include <iostream>
-#include "eadib_log/log_configuration/TimeStamp.h"
-#include "eadib_log/log_configuration/LogLevel_types.h"
+#include "../log_configuration/TimeStamp.h"
+#include "../log_configuration/LogLevel_types.h"
 
 namespace eadlib {
     namespace log {

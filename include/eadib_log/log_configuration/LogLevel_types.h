@@ -25,7 +25,7 @@ namespace eadlib {
              * @param level Log level enum type
              * @return Level code
              */
-            static unsigned int getCode( const Type &level ) {
+            inline static unsigned int getCode( const Type &level ) {
                 switch( level ) {
                     case Type::OFF:
                         return 0;
@@ -50,7 +50,7 @@ namespace eadlib {
              * @return Log level type
              * @throws std::invalid_argument when the code is not a valid log level
              */
-            static Type getLevel( const unsigned int &code ) {
+            inline static Type getLevel( const unsigned int &code ) {
                 switch( code ) {
                     case 0:
                         return Type::OFF;
@@ -77,7 +77,7 @@ namespace eadlib {
              * @return Type for the description
              * @exception throws std::invalid_argument when a descriptor doesn't match any of the log level types
              */
-            static Type getDescriptionType( const std::string &description ) {
+            inline static Type getDescriptionType( const std::string &description ) {
                 if( std::regex_match( description, std::regex( "FATAL" ))) {
                     return Type::FATAL;
                 }

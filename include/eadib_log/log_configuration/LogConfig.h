@@ -9,6 +9,9 @@
 #include <regex>
 #include <zconf.h>
 #include "OutputConfiguration.h"
+#include "LogLevel_types.h"
+#include "../log_outputs/LogOutput_types.h"
+#include "../log_formatters/Formatter_types.h"
 
 namespace eadlib {
     namespace log {
@@ -36,7 +39,7 @@ namespace eadlib {
          * Constructor
          * @param config_file_name Name of the configuration file
          */
-        LogConfig::LogConfig( const std::string &config_file_name ) :
+        inline LogConfig::LogConfig( const std::string &config_file_name ) :
             _config_file_name( config_file_name )
         {
             if( access( _config_file_name.c_str(), F_OK ) != -1 ) { //file exists
@@ -70,7 +73,7 @@ namespace eadlib {
          * @param output_type    Type of output
          * @param formatter_type Formatter for output
          */
-        void LogConfig::createOutput( const std::string &name, const unsigned int &level, const LogOutput_types::Type &output_type,
+        inline void LogConfig::createOutput( const std::string &name, const unsigned int &level, const LogOutput_types::Type &output_type,
                                       const Formatter_types::Type &formatter_type ) {
             if( !checkOutputNameExists( name ) ) {
                 try {
@@ -95,7 +98,7 @@ namespace eadlib {
          * @param event_type        Message level
          * @param msg               Message description
          */
-        void LogConfig::distributeMsg( const TimeStamp &ts, const uint32_t &number_of_entries, const LogLevel_types::Type &event_type, const std::string &msg ) const {
+        inline void LogConfig::distributeMsg( const TimeStamp &ts, const uint32_t &number_of_entries, const LogLevel_types::Type &event_type, const std::string &msg ) const {
             for( auto const &output_option : _outputs ) {
                 if( output_option->getOutputLevelCode() > 0 && output_option->getOutputLevelCode() >= LogLevel_types::getCode( event_type ) ) {
                     try {
@@ -116,7 +119,7 @@ namespace eadlib {
          * @param line Configuration line to check & load
          * @return Success
          */
-        bool LogConfig::loadConfigLine( const std::string &line, const size_t &line_number ) {
+        inline bool LogConfig::loadConfigLine( const std::string &line, const size_t &line_number ) {
             std::string cfg_line = line;
             cfg_line.erase( std::remove_if( cfg_line.begin(), cfg_line.end(), isspace ), cfg_line.end() ); //loose any whitespace in the line
             std::regex rx_comment_line ( "//(.*?)"); //Regex for comment line
@@ -144,7 +147,7 @@ namespace eadlib {
         /**
          * Loads hard coded default
          */
-        void LogConfig::loadDefaults() {
+        inline void LogConfig::loadDefaults() {
             createOutput( "log", 6, eadlib::log::LogOutput_types::Type::FILE_NEW, eadlib::log::Formatter_types::Type::TERMINAL );
             createOutput( "console", 3, eadlib::log::LogOutput_types::Type::TERMINAL, eadlib::log::Formatter_types::Type::TERMINAL );
         }
@@ -153,7 +156,7 @@ namespace eadlib {
          * Gets the default config file content string
          * @return String of all the defaults
          */
-        std::string LogConfig::getDefaultConfig() {
+        inline std::string LogConfig::getDefaultConfig() {
             std::stringstream ss;
             ss << "//===================================LOG CONFIG FILE=========================================//\n" <<
             "// Available outputs:    { TERMINAL, FILE_APPEND, FILE_OVERWRITE, FILE_NEW }\n" <<
@@ -176,7 +179,7 @@ namespace eadlib {
          * @param name Name to check
          * @return Existence
          */
-        bool LogConfig::checkOutputNameExists( const std::string &name ) {
+        inline bool LogConfig::checkOutputNameExists( const std::string &name ) {
             for( auto &out : _outputs ) {
                 if( out->getName() == name ) {
                     return true;
@@ -190,7 +193,7 @@ namespace eadlib {
         * @param string String to extract from
         * @return Vector of all arguments extracted
         */
-        std::vector<std::string> LogConfig::extractArgs( const std::string &string ) {
+        inline std::vector<std::string> LogConfig::extractArgs( const std::string &string ) {
             size_t cut_begin = string.find( "<" );
             size_t cut_end = string.find( ">" );
             std::string temp = string.substr( cut_begin + 1, cut_end - ( cut_begin + 1 ) );

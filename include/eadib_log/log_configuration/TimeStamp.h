@@ -25,7 +25,7 @@ namespace eadlib {
         /**
          * Constructor
          */
-        TimeStamp::TimeStamp() :
+        inline TimeStamp::TimeStamp() :
             _time_stamp( std::chrono::system_clock::to_time_t( std::chrono::system_clock::now() ) )
         {}
 
@@ -33,7 +33,7 @@ namespace eadlib {
          * Gets the time as a string
          * @return time stamp
          */
-        std::string TimeStamp::getTime() const {
+        inline std::string TimeStamp::getTime() const {
             std::stringstream ss;
             ss << std::put_time( std::localtime(&_time_stamp ), "%H:%M:%S");
             return ss.str();
@@ -43,7 +43,7 @@ namespace eadlib {
          * Gets the date as a string
          * @return date stamp
          */
-        std::string TimeStamp::getDate() const {
+        inline std::string TimeStamp::getDate() const {
             std::stringstream ss;
             ss << std::put_time( std::localtime( &_time_stamp ), "%d/%m/%Y");
             return ss.str();
@@ -54,7 +54,7 @@ namespace eadlib {
          * @param formatter Formatter string for the output
          * @return Formatted time stamp
          */
-        std::string TimeStamp::getTimeStamp( const std::string &formatter ) const {
+        inline std::string TimeStamp::getTimeStamp( const std::string &formatter ) const {
             std::stringstream ss;
             ss << std::put_time( std::localtime( &_time_stamp ), formatter.c_str() );
             return ss.str();

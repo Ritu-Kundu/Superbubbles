@@ -22,7 +22,7 @@
 #include <vector>
 #include <exception>
 #include <mutex>
-#include "eadib_log/log_configuration/LogConfig.h"
+#include "log_configuration/LogConfig.h"
 
 #ifndef NDEBUG
     #define LOG_FATAL eadlib_logger_instance.print< eadlib::log::LogLevel_types::Type::FATAL >
@@ -65,7 +65,7 @@ namespace eadlib {
         /**
          * Logger Constructor
          */
-        Logger::Logger() :
+        inline Logger::Logger() :
             _number_of_entries( 0 ),
             _config( std::make_unique<eadlib::log::LogConfig>( "log_config.cfg" ) )
         {}
@@ -103,7 +103,7 @@ namespace eadlib {
          * Gets the current log entry number
          * @return Entry number
          */
-        std::string Logger::getEntryNumber() {
+        inline std::string Logger::getEntryNumber() {
             std::stringstream ss;
             ss.fill( '0' );
             ss.width( 7 );

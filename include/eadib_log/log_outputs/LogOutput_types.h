@@ -22,7 +22,7 @@ namespace eadlib {
              * @param type LogOutput::Type
              * @return Description
              */
-            static std::string getTypeDescription( const Type &type ) {
+            inline static std::string getTypeDescription( const Type &type ) {
                 switch( type ) {
                     case Type::FILE_OVERWRITE:
                         return "FILE_OVERWRITE";
@@ -41,7 +41,7 @@ namespace eadlib {
              * @return Type for the description
              * @exception throws std::invalid_argument when a descriptor doesn't match any of the output types
              */
-            static Type getDescriptionType( const std::string &description ) {
+            inline static Type getDescriptionType( const std::string &description ) {
                 if( std::regex_match( description, std::regex ( "FILE_OVERWRITE" ) ) ) {
                     return Type::FILE_OVERWRITE;
                 }

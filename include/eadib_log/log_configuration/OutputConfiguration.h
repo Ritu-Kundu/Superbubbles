@@ -7,15 +7,15 @@
 
 #include <memory>
 
-#include "eadib_log/log_outputs/LogOutput.h"
-#include "eadib_log/log_outputs/LogOutput_types.h"
-#include "eadib_log/log_formatters/Formatter.h"
-#include "eadib_log/log_formatters/Formatter_types.h"
-#include "eadib_log/log_outputs/LogOutput_Terminal.h"
-#include "eadib_log/log_outputs/LogOutput_FileAppend.h"
-#include "eadib_log/log_outputs/LogOutput_FileOverwrite.h"
-#include "eadib_log/log_formatters/Formatter_Terminal.h"
-#include "eadib_log/log_outputs/LogOutput_FileNew.h"
+#include "../log_outputs/LogOutput.h"
+#include "../log_outputs/LogOutput_types.h"
+#include "../log_formatters/Formatter.h"
+#include "../log_formatters/Formatter_types.h"
+#include "../log_outputs/LogOutput_Terminal.h"
+#include "../log_outputs/LogOutput_FileAppend.h"
+#include "../log_outputs/LogOutput_FileOverwrite.h"
+#include "../log_formatters/Formatter_Terminal.h"
+#include "../log_outputs/LogOutput_FileNew.h"
 
 namespace eadlib {
     namespace log {
@@ -48,7 +48,7 @@ namespace eadlib {
          * @param formatType Formatter
          * @param outputType Output
          */
-        OutputConfiguration::OutputConfiguration( const std::string &name, const LogLevel_types::Type &log_level, const LogOutput_types::Type &output,
+        inline OutputConfiguration::OutputConfiguration( const std::string &name, const LogLevel_types::Type &log_level, const LogOutput_types::Type &output,
                                                   const Formatter_types::Type &formatter ) :
             _name( name ),
             _output_level( log_level )
@@ -77,7 +77,7 @@ namespace eadlib {
         /**
          * Move Constructor
          */
-        OutputConfiguration::OutputConfiguration( OutputConfiguration &&output_config ) :
+        inline OutputConfiguration::OutputConfiguration( OutputConfiguration &&output_config ) :
             _output( std::move( output_config._output.release() ) ),
             _formatter( std::move( output_config._formatter.release() ) )
         {}
@@ -86,7 +86,7 @@ namespace eadlib {
          * Sets the Output's log level
          * @param level Log level
          */
-        void OutputConfiguration::setOutputLevel( LogLevel_types::Type level ) {
+        inline void OutputConfiguration::setOutputLevel( LogLevel_types::Type level ) {
             _output_level = level;
         }
 
@@ -95,7 +95,7 @@ namespace eadlib {
          * @param level Log level
          * @exception std::invalid_argument when argument is not a valid log level code
          */
-        void OutputConfiguration::setOutputLevel( unsigned int level ) {
+        inline void OutputConfiguration::setOutputLevel( unsigned int level ) {
             if( level > 6 ) {
                 throw new std::invalid_argument( "[OutputConfiguration::setOutputLevel( unsigned int )] level is not a valid log level." );
             } else {
@@ -107,7 +107,7 @@ namespace eadlib {
          * Gets the output's log level code
          * @return Log level code
          */
-        unsigned int OutputConfiguration::getOutputLevelCode() {
+        inline unsigned int OutputConfiguration::getOutputLevelCode() {
             return LogLevel_types::getCode( _output_level );
         }
 
@@ -115,7 +115,7 @@ namespace eadlib {
          * Gets the Output's name
          * @return Name of the output
          */
-        std::string OutputConfiguration::getName() {
+        inline std::string OutputConfiguration::getName() {
             return _name;
         }
 
@@ -125,7 +125,7 @@ namespace eadlib {
          * @param msgNum    Message number in the session
          * @param msg       Log message
          */
-        void OutputConfiguration::send( const TimeStamp &ts, const uint32_t &msgNum, const LogLevel_types::Type &level, const std::string &msg ) {
+        inline void OutputConfiguration::send( const TimeStamp &ts, const uint32_t &msgNum, const LogLevel_types::Type &level, const std::string &msg ) {
             std::string s = _formatter->formatMsg( ts, msgNum, level, msg );
             _output->write( s );
         }
