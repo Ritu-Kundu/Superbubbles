@@ -22,9 +22,6 @@
 #include <vector>
 #include <exception>
 #include <mutex>
-#include "eadib_log/log_outputs/LogOutput.h"
-#include "eadib_log/log_configuration/LogLevel_types.h"
-#include "eadib_log/log_configuration/OutputConfiguration.h"
 #include "eadib_log/log_configuration/LogConfig.h"
 
 #ifndef NDEBUG

@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "../eadib_log/Logger.h"
+#include "../../include/eadib_log/Logger.h"
 
 /**
  * Prints the command line argument usage

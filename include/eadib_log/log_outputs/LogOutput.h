@@ -6,7 +6,6 @@
 #define EADLIB_LOGOUTPUT_H
 
 #include <iostream>
-#include "eadib_log/log_formatters/Formatter.h"
 
 namespace eadlib {
     namespace log {

@@ -9,9 +9,6 @@
 #include <regex>
 #include <zconf.h>
 #include "OutputConfiguration.h"
-#include "LogLevel_types.h"
-#include "eadib_log/log_outputs/LogOutput_types.h"
-#include "eadib_log/log_formatters/Formatter_types.h"
 
 namespace eadlib {
     namespace log {
