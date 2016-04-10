@@ -1,39 +1,32 @@
 #include <iostream>
+
 #include "../../include/eadib_log/Logger.h"
 #include "Creator.h"
+#include "tools/CLParser.h"
 
-/**
- * Prints the command line argument usage
- */
-void printCmdUsage( const int &argc, char *argv[] ) {
-    LOG_TRACE( "Usage :", argv[0] );
-    std::cout << "Usage: " << argv[0] << " <size> <filename>" << std::endl;
-}
 
 int main( int argc, char *argv[] ) {
-    auto randomiser = genomeMaker::Randomiser();
-    auto creator = genomeMaker::Creator( randomiser, "test" );
-    creator.create_DNA( 100000 );
-
-    /*
-    if ( argc != 2 ) // argc should be 2 for correct execution
-        printCmdUsage( argc, argv );
-    else {
-        /*
-        // We assume argv[1] is a filename to open
-        ifstream the_file ( argv[1] );
-        // Always check to see if file opening succeeded
-        if ( !the_file.is_open() )
-            cout<<"Could not open file\n";
-        else {
-            char x;
-            // the_file.get ( x ) returns false if the end of the file
-            //  is reached or an error occurs
-            while ( the_file.get ( x ) )
-                cout<< x;
+    auto parser = genomeMaker::CLParser( argc, argv );
+    if( parser.isValid() ) {
+        std::cout << "|------------------------------------------|\n" <<
+                     "|===========[Genome Maker v1.0]============|\n" <<
+                     "|------------------------------------------|\n" <<
+        std::endl;
+        auto randomiser = genomeMaker::Randomiser();
+        auto creator = genomeMaker::Creator( randomiser, parser.getFileName() );
+        switch( parser.getType() ) {
+            case genomeMaker::CLParser::LetterType::DNA:
+                creator.create_DNA( parser.getGenomeSize() );
+                break;
+            case genomeMaker::CLParser::LetterType::RNA:
+                creator.create_RNA( parser.getGenomeSize() );
+                break;
+            case genomeMaker::CLParser::LetterType::SET:
+                creator.create_SET( parser.getGenomeSize(), parser.getLetterSet() );
+                break;
         }
-        // the_file is closed implicitly here
+
+        //TODO Emulated FASTA reader
     }
-         */
     return 0;
 }

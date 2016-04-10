@@ -6,8 +6,8 @@
 //TODO completely random generation from of a set of given letters
 
 #include <iostream>
-#include "Randomiser.h"
-#include "ProgressDisplay.h"
+#include "tools/Randomiser.h"
+#include "tools/ProgressDisplay.h"
 #include "../../include/eadib_log/Logger.h"
 
 namespace genomeMaker {

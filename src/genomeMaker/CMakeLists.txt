@@ -15,11 +15,13 @@ set(GENOME_MAKER
         Reader.h
         Creator.cpp
         Creator.h
-        Randomiser.cpp
-        Randomiser.h
-        ProgressDisplay.cpp
-        ProgressDisplay.h
-        Writer.h)
+        tools/Randomiser.cpp
+        tools/Randomiser.h
+        tools/ProgressDisplay.cpp
+        tools/ProgressDisplay.h
+        Writer.h
+        tools/CLParser.cpp
+        tools/CLParser.h)
 
 add_executable(
         GenomeMaker

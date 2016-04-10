@@ -48,6 +48,7 @@ void genomeMaker::Creator::create_SET( const uint64_t &genome_size, const std::s
  */
 void genomeMaker::Creator::createGenomeFile( const uint64_t &genome_size, const std::vector<char> &set ) {
     _randomiser.setPoolRange( 0, set.size() - 1 );
+    std::cout << "Creating synthetic genome.." << std::endl;
     ProgressDisplay progress( genome_size, 70);
     Writer writer( _file_name );
     for( uint64_t i = 1; i <= genome_size; i++ ) {

@@ -2,7 +2,7 @@
 #define SUPERBUBBLES_RANDOMISER_H
 
 #include <random>
-#include "../../include/eadib_log/Logger.h"
+#include "eadib_log/Logger.h"
 
 namespace genomeMaker {
     class Randomiser {
