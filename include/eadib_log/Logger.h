@@ -25,16 +25,16 @@
 #include "eadib_log/log_configuration/LogConfig.h"
 
 #ifndef NDEBUG
-    #define LOG_FATAL eadlib_logger_instance.print< eadlib::log::LogLevel::Type::FATAL >
+    #define LOG_FATAL eadlib_logger_instance.print< eadlib::log::LogLevel_types::Type::FATAL >
     #define LOG_ERROR eadlib_logger_instance.print< eadlib::log::LogLevel_types::Type::ERROR >
     #define LOG_WARNING eadlib_logger_instance.print< eadlib::log::LogLevel_types::Type::WARNING >
     #define LOG eadlib_logger_instance.print< eadlib::log::LogLevel_types::Type::MSG >
     #define LOG_DEBUG eadlib_logger_instance.print< eadlib::log::LogLevel_types::Type::DEBUG >
     #define LOG_TRACE eadlib_logger_instance.print< eadlib::log::LogLevel_types::Type::TRACE >
 #else
-    #define LOG_FATAL eadlib_logger_instance.print< eadlib::log::LogLevel::Type::FATAL >
-    #define LOG_ERROR eadlib_logger_instance.print< eadlib::log::LogLevel::Type::ERROR >
-    #define LOG_WARNING eadlib_logger_instance.print< eadlib::log::LogLevel::Type::WARNING >
+    #define LOG_FATAL eadlib_logger_instance.print< eadlib::log::LogLevel_types::Type::FATAL >
+    #define LOG_ERROR eadlib_logger_instance.print< eadlib::log::LogLevel_types::Type::ERROR >
+    #define LOG_WARNING eadlib_logger_instance.print< eadlib::log::LogLevel_types::Type::WARNING >
     #define LOG(...)
     #define LOG_DEBUG(...)
     #define LOG_TRACE(...)

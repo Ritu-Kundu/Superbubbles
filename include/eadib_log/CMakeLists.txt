@@ -1,3 +1,4 @@
+#[[
 cmake_minimum_required(VERSION 3.2)
 project(genome_maker)
 
@@ -30,4 +31,4 @@ add_library(
         STATIC
         ${EADLIB_LOGGER})
 
-SET_TARGET_PROPERTIES(ead_logger PROPERTIES LINKER_LANGUAGE CXX)
+SET_TARGET_PROPERTIES(ead_logger PROPERTIES LINKER_LANGUAGE CXX)]]
