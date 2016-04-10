@@ -16,7 +16,10 @@ set(GENOME_MAKER
         Creator.cpp
         Creator.h
         Randomiser.cpp
-        Randomiser.h)
+        Randomiser.h
+        ProgressDisplay.cpp
+        ProgressDisplay.h
+        Writer.h)
 
 add_executable(
         GenomeMaker

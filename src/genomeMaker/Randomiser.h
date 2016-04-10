@@ -2,16 +2,19 @@
 #define SUPERBUBBLES_RANDOMISER_H
 
 #include <random>
+#include "../../include/eadib_log/Logger.h"
 
 namespace genomeMaker {
     class Randomiser {
       public:
-        Randomiser( const size_t &pool_size );
-        unsigned int getRand();
-
+        Randomiser();
+        Randomiser( const Randomiser &randomiser );
+        Randomiser( Randomiser &&randomiser );
+        bool setPoolRange( const uint64_t &range_from, const uint64_t &range_to );
+        unsigned long getRand();
       private:
         std::mt19937 _rng;
-        std::uniform_int_distribution<uint32_t> _distribution;
+        std::uniform_int_distribution<uint64_t> _distribution;
     };
 }
 

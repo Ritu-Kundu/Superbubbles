@@ -1,9 +1,6 @@
-//
-// Created by alwyn on 3/12/16.
-//
-
 #include <iostream>
 #include "../../include/eadib_log/Logger.h"
+#include "Creator.h"
 
 /**
  * Prints the command line argument usage
@@ -14,6 +11,11 @@ void printCmdUsage( const int &argc, char *argv[] ) {
 }
 
 int main( int argc, char *argv[] ) {
+    auto randomiser = genomeMaker::Randomiser();
+    auto creator = genomeMaker::Creator( randomiser, "test" );
+    creator.create_DNA( 100000 );
+
+    /*
     if ( argc != 2 ) // argc should be 2 for correct execution
         printCmdUsage( argc, argv );
     else {
@@ -31,7 +33,7 @@ int main( int argc, char *argv[] ) {
                 cout<< x;
         }
         // the_file is closed implicitly here
-         */
     }
+         */
     return 0;
 }
