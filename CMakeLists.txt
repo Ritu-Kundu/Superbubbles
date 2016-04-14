@@ -17,30 +17,28 @@ find_library(divsufsort lib)
 link_directories(lib)
 
 #// Add all the sub-project directories
-add_subdirectory(src/genomeMaker)
-add_subdirectory(tests/genomeMaker)
-add_subdirectory(include/eadib_log)
+add_subdirectory(tests)
 
 #// Source files
 set(SOURCE_FILES
-        src/algo_linear/CandidateList.cpp
-        src/algo_linear/CandidateList.hpp
-        src/algo_linear/DAG.cpp
-        src/algo_linear/DAG.hpp
-        src/algo_linear/DetectSuperBubble.cpp
-        src/algo_linear/DetectSuperBubble.hpp
-        src/algo_linear/globalDefs.hpp
-        src/algo_linear/Graph.cpp
-        src/algo_linear/Graph.hpp
-        src/algo_linear/helper.cpp
-        src/algo_linear/helperDefs.hpp
-        src/algo_linear/Subgraph.cpp
-        src/algo_linear/Subgraph.hpp
-        src/algo_linear/supbub.cpp)
+        src/Superbubble/algorithms/linear/CandidateList.cpp
+        src/Superbubble/algorithms/linear/CandidateList.hpp
+        src/Superbubble/algorithms/linear/DAG.cpp
+        src/Superbubble/algorithms/linear/DAG.hpp
+        src/Superbubble/algorithms/linear/DetectSuperBubble.cpp
+        src/Superbubble/algorithms/linear/DetectSuperBubble.hpp
+        src/Superbubble/algorithms/linear/globalDefs.hpp
+        src/Superbubble/algorithms/linear/Graph.cpp
+        src/Superbubble/algorithms/linear/Graph.hpp
+        src/Superbubble/algorithms/linear/helper.cpp
+        src/Superbubble/algorithms/linear/helperDefs.hpp
+        src/Superbubble/algorithms/linear/Subgraph.cpp
+        src/Superbubble/algorithms/linear/Subgraph.hpp
+        src/Superbubble/algorithms/linear/supbub.cpp)
 
 add_executable(
-        SuperBubbles
+        supbub
         ${SOURCE_FILES}
 )
 
-target_link_libraries(SuperBubbles sdsl divsufsort)
+target_link_libraries(supbub sdsl divsufsort)
