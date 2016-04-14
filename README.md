@@ -50,3 +50,6 @@ SuperBubble will be calculated and result will be written in the file "sampleOut
  * For answering rmq queries, following libraries have been used:
   + [sdsl](https://github.com/simongog/sdsl-lite)
 - Solon's [MAW](https://github.com/solonas13/maw) helped as an inspiration for better organization of the code.
+
+
+-For generate synthetic data the genomeMaker tool is available here [repo](https://bitbucket.org/eadavison/genomemaker).
