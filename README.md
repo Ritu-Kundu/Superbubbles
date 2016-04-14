@@ -52,4 +52,4 @@ SuperBubble will be calculated and result will be written in the file "sampleOut
 - Solon's [MAW](https://github.com/solonas13/maw) helped as an inspiration for better organization of the code.
 
 
--For generate synthetic data the genomeMaker tool is available here [repo](https://bitbucket.org/eadavison/genomemaker).
+-For generating synthetic data the genomeMaker tool is available here [repo](https://bitbucket.org/eadavison/genomemaker).
