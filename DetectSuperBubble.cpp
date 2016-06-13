@@ -211,7 +211,7 @@ namespace supbub {
     Candidate* valid = nullptr;
     while(dag->ordD[s->vertexId] >= dag->ordD[start->vertexId]){
       valid = validateSuperBubble(dag, s, exit);
-      if (valid==s || valid->vertexId == mark[s->vertexId] || valid == nullptr){
+      if (valid==s || valid == nullptr || valid->vertexId == mark[s->vertexId]){
 	break;
       }
       mark[s->vertexId] = valid->vertexId;
