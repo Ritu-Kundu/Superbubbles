@@ -89,7 +89,7 @@ namespace supbub {
 
   void 
   Graph::addEdge(int64_t u, int64_t v){
-    if (u > _numVertices || u > _numVertices || u < 0 || v < 0) {
+    if (u > _numVertices || v > _numVertices || u < 0 || v < 0) {
       log("Invalid u or v : ", u, v);
     }
     _adjList[u].push_back(v);
