@@ -71,7 +71,7 @@ namespace supbub{
     /** Constructor
      * @param n total number of vertices
      */
-    Subgraph(INT n); 
+    Subgraph(int64_t n); 
 
     /** Destructor */ 
     ~Subgraph();
@@ -81,13 +81,13 @@ namespace supbub{
      * @return global vertex-id of v.
      *         or -1 if v is invalid
      */
-    VERTEXID getGlobalId(VERTEXID v);
+    int64_t getGlobalId(int64_t v);
 
      /** Sets the global vertex-id of the given local vertex-id.
      * @param localId local-id of the vertex whose global-id is to be set.
      * @param globalId global-id to be set.
      */
-    void setGlobalId(VERTEXID localId, VERTEXID globalId);
+    void setGlobalId(int64_t localId, int64_t globalId);
 
      /** Returns the local-id of the source(r) of the graph.
      *
@@ -95,24 +95,24 @@ namespace supbub{
      *
      */
 
-    VERTEXID getSourceId();
+    int64_t getSourceId();
 
      /** Returns the local-id of the terminal/sink(r') of the graph.
      *
      * It is the last vertex.
      *
      */
-    VERTEXID getTerminalId();
+    int64_t getTerminalId();
 
     /** Returns the duplicate-local-id of the vertex with the given local-id. 
      * @return duplicate-local-id of v or -1 if v is invalid
      */
-    VERTEXID getDuplicateId(VERTEXID v);
+    int64_t getDuplicateId(int64_t v);
 
     /** Returns the original-local-id of the vertex with the given duplicate-local-id. 
      * @return original-local-id of v or -1 if v is invalid
      */
-    VERTEXID getOriginalId(VERTEXID v);
+    int64_t getOriginalId(int64_t v);
 
     /** Checks whether the given local-id corresponds to duplicate(u'') vertex in the resultant dag or not. 
      * @param v given local-id.
@@ -120,7 +120,7 @@ namespace supbub{
      *         false if v is local-id corresponding to original vertex(u') in the resultant dag G'.
      *         an invalid v also returns false. 
      */
-    bool isDuplicateId(VERTEXID v);
+    bool isDuplicateId(int64_t v);
 
     /** Checks whether the given vertex is an ancestor of the given other vertex in DFS tree of this subgraph.
      *
@@ -134,11 +134,11 @@ namespace supbub{
      *               or getDAG() hasn't been called earlier than this function.
      * 
      */
-    bool isAncestor(VERTEXID anc, VERTEXID des);
+    bool isAncestor(int64_t anc, int64_t des);
 
     /** Returns offset of this subgraph.
      */
-    INT getOffset();
+    int64_t getOffset();
 
     /** Returns a pointer to the underlying DAG of this subgraph. 
      * Follows GraphToDAG method described in the paper.
@@ -152,7 +152,7 @@ namespace supbub{
   private:
 
     /** Pointer to the array mapping subgraph's(G) vertex id (local) to graph's(H) vertex id (global). */
-    INT* _reverseMapId;
+    int64_t* _reverseMapId;
 
     /** Integer representing the offset between a vertex's local-id and its duplicate vetex's local-id in this subgraph's underlying DAG i.e. G'.
      *
@@ -161,15 +161,15 @@ namespace supbub{
      *    -- (size -2) because last and second-last correspond to sink and source resp.  
      * -- used for duplicating nodes while obtaining the DAG of this subgraph 
      */
-    INT _offSet;
+    int64_t _offSet;
 
     DAG* _dag;
 
     /** Pointer to the array mapping subgraph's(G) vertices to their discovery time in DFS traversal. */
-    INT* _discovery;
+    int64_t* _discovery;
 
     /** Pointer to the array mapping subgraph's(G) vertices to their finishing time in DFS traversal. */
-    INT* _finish;
+    int64_t* _finish;
 
     /** enum for vertex-color used in case of DFS to identify back-edges*/
     enum Color { WHITE, GRAY, BLACK };
@@ -180,7 +180,7 @@ namespace supbub{
      * @param color Pointer to an array marking colors of the vertices to keep track of unvisited(WHITE), visited but not finished(GRAY) and finished(BLACK) vertices.
      *
      */   
-    void DFSVisit(VERTEXID u, INT tick, Color* color);
+    void DFSVisit(int64_t u, int64_t tick, Color* color);
   
 
  

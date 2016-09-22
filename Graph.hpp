@@ -41,15 +41,15 @@ namespace supbub{
    */
 
    /** type for vertex */
-    typedef INT VERTEXID;
+    typedef int64_t int64_t;
 
     
     /** type for list of ids of vertices */
-    typedef std::list<VERTEXID> VERTEXID_LIST;
+    typedef std::list<int64_t> int64_t_LIST;
 
  
     /** type for iterator of list of vertices */
-    typedef VERTEXID_LIST::iterator VERTEXID_LIST_ITERATOR;
+    typedef int64_t_LIST::iterator int64_t_LIST_ITERATOR;
 
 
   class Graph{
@@ -59,23 +59,23 @@ namespace supbub{
     /** Constructor
      * @param n total number of vertices
      */
-    Graph(INT n); 
+    Graph(int64_t n); 
 
     /** Destructor */ 
     ~Graph();
 
     /** Gives the number of vertices of graph. */
-    INT numVertices();
+    int64_t numVertices();
 
     /** Gives the number of vertices of graph. */
-    INT numEdges();
+    int64_t numEdges();
 
     /** Returns list of children of the vertex.
      * Assumes v is valid.
      * @param v given vertex-id.
      * @return reference to list of ids of child vertices.
      */
-    VERTEXID_LIST& getChildren(VERTEXID v);
+    int64_t_LIST& getChildren(int64_t v);
 
     /** Returns list of parents of the vertex.
      * Assumes v is valid.
@@ -83,15 +83,15 @@ namespace supbub{
      * @return reference to list of ids of parent vertices
      *         
      */
-     VERTEXID_LIST& getParents(VERTEXID v);
+     int64_t_LIST& getParents(int64_t v);
 
     /** Returns indegree of the vertex with given vertex-id (if v exists, -1 otherwise).
      */
-    INT getInDegree(VERTEXID v);
+    int64_t getInDegree(int64_t v);
 
     /** Returns outdegree of the vertex with given vertex-id (if v exists, -1 otherwise).
      */
-    INT getOutDegree(VERTEXID v);
+    int64_t getOutDegree(int64_t v);
 
 
 
@@ -99,7 +99,7 @@ namespace supbub{
      * @param u id of source vertex of edge
      * @param v id of terminal vertex of edge
      */
-    void addEdge(VERTEXID u, VERTEXID v);
+    void addEdge(int64_t u, int64_t v);
 
     /** Fills the given array with ids of the subgraphs(coresponding to 'scc') which corresponding vertex belongs to.
      * 
@@ -110,7 +110,7 @@ namespace supbub{
      * @param scc Pointer to the array to be filled in with subgraph-id of each vertex.
      * @return number of subgraphs(one corresponding to all vertices in singleton sccs and rest corresponding to each of the non-singleton scc) .     
      */
-     INT fillSCC(INT* scc);
+     int64_t fillSCC(int64_t* scc);
 
     /* Prints the graph in the form of adjacency list 
      */
@@ -120,30 +120,30 @@ namespace supbub{
     //////////////////////// protected ////////////////////////
   protected:
     /** total number of vertices in the graph */
-    INT _numVertices;
+    int64_t _numVertices;
 
     /** total number of edges in the graph */
-    INT _numEdges;
+    int64_t _numEdges;
 
     /** adjacency list
      *  it is the pointer to an array where an element at index say 'u' is a pointer to a list of ids 'v' of all vertices such that there is an edge from the vertex with id u to the vertex with id v.
      */
-    VERTEXID_LIST* _adjList;
+    int64_t_LIST* _adjList;
 
     /** parent list
      *  it is the pointer to an array where an element at index say 'u' is a pointer to a list of ids 'v' of all vertices such that there is an edge from the vertex with id v to the vertex with id u.
      */
-    VERTEXID_LIST* _parentList;
+    int64_t_LIST* _parentList;
 
     /** array of indegree of each vertex
      *  it is the pointer to an array where an element at index say 'u' containes n where n is indegree of the vertexwith id  u.
      */
-    INT* _inDegree;
+    int64_t* _inDegree;
 
     /** array of outdegree of each vertex
      *  it is the pointer to an array where an element at index say 'u' containes n where n is outdegree of the vertex with id u.
      */
-    INT* _outDegree;
+    int64_t* _outDegree;
  
     //////////////////////// private ////////////////////////
   private:
@@ -162,8 +162,8 @@ namespace supbub{
      */
 
     void 
-    findScc(INT u, INT* disc, INT* low, std::stack<int> *st,
-	bool* stacked, INT& tick, INT& currentScc, INT* scc);
+    findScc(int64_t u, int64_t* disc, int64_t* low, std::stack<int64_t> *st,
+	bool* stacked, int64_t& tick, int64_t& currentScc, int64_t* scc);
  
   };
 

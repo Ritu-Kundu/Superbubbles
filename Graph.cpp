@@ -19,20 +19,20 @@
 
 namespace supbub {
 
-  Graph::Graph(INT n) {
+  Graph::Graph(int64_t n) {
     _numVertices = n;
     _numEdges = 0;
-    _adjList = new VERTEXID_LIST[n];
-    std::fill_n(_adjList, _numVertices, VERTEXID_LIST{}); // set to empty list
+    _adjList = new int64_t_LIST[n];
+    std::fill_n(_adjList, _numVertices, int64_t_LIST{}); // set to empty list
 
-   _parentList = new VERTEXID_LIST[_numVertices];
-   std::fill_n(_parentList, _numVertices, VERTEXID_LIST{}); // set to empty list
+   _parentList = new int64_t_LIST[_numVertices];
+   std::fill_n(_parentList, _numVertices, int64_t_LIST{}); // set to empty list
 
 
-    _inDegree = new INT[_numVertices];
+    _inDegree = new int64_t[_numVertices];
     std::fill_n(_inDegree, _numVertices, 0); // set to 0
 
-    _outDegree = new INT[_numVertices];
+    _outDegree = new int64_t[_numVertices];
     std::fill_n(_outDegree, _numVertices, 0); // set to 0
 
    }
@@ -44,30 +44,30 @@ namespace supbub {
     delete[] _outDegree;
   }
 
-  INT 
+  int64_t 
   Graph::numVertices(){
     return _numVertices;
   }
 
-  INT 
+  int64_t 
   Graph::numEdges(){
     return _numEdges;
   }
 
 
-  VERTEXID_LIST&
-  Graph::getChildren(VERTEXID v){
+  int64_t_LIST&
+  Graph::getChildren(int64_t v){
     return  _adjList[v];
   }
 
 
-  VERTEXID_LIST&
-  Graph::getParents(VERTEXID v){
+  int64_t_LIST&
+  Graph::getParents(int64_t v){
     return _parentList[v];
   }
 
-  INT
-  Graph::getInDegree(VERTEXID v){
+  int64_t
+  Graph::getInDegree(int64_t v){
     if (v < _numVertices && v >= 0) {
       return _inDegree[v];
     } else {
@@ -76,8 +76,8 @@ namespace supbub {
     }
   }
 
-  INT
-  Graph::getOutDegree(VERTEXID v){
+  int64_t
+  Graph::getOutDegree(int64_t v){
     if (v < _numVertices  && v >= 0) {
       return _outDegree[v];
     } else {
@@ -88,8 +88,8 @@ namespace supbub {
 
 
   void 
-  Graph::addEdge(INT u, INT v){
-    if (u > _numVertices || u > _numVertices || u < 0 || v < 0) {
+  Graph::addEdge(int64_t u, int64_t v){
+    if (u > _numVertices || v > _numVertices || u < 0 || v < 0) {
       log("Invalid u or v : ", u, v);
     }
     _adjList[u].push_back(v);
@@ -118,12 +118,12 @@ namespace supbub {
      *currentScc = ID of the current non-singleton scc being discovered
      (Initialize to 0)
   */
-  INT 
-  Graph::fillSCC(INT* scc) {
-    INT* disc = new INT[_numVertices];
-    INT* low = new INT[_numVertices];
+  int64_t 
+  Graph::fillSCC(int64_t* scc) {
+    int64_t* disc = new int64_t[_numVertices];
+    int64_t* low = new int64_t[_numVertices];
     bool* stacked = new bool[_numVertices];
-    std::stack<INT> *st = new std::stack<INT>();
+    std::stack<int64_t> *st = new std::stack<int64_t>();
  
     // Initialize disc, low and stacked arrays
     std::fill_n(disc, _numVertices, 0); // set to 0
@@ -131,12 +131,12 @@ namespace supbub {
     std::fill_n(stacked, _numVertices, false); // set to 0
 
     // Set value of initial tick (clock), SCC Id 
-    INT tick = 0;
-    INT currentScc = 1; // 0 is reserved for singeton SCCs
+    int64_t tick = 0;
+    int64_t currentScc = 1; // 0 is reserved for singeton SCCs
 
     // Call the recursive helper function to find strongly
     // connected components in DFS tree with vertex 'i'
-    for (VERTEXID i = 0; i < _numVertices; ++i) {
+    for (int64_t i = 0; i < _numVertices; ++i) {
       if (disc[i] == 0) {
 	findScc(i, disc, low, st, stacked, tick, currentScc, scc);
       }
@@ -153,8 +153,8 @@ namespace supbub {
 
   void 
   Graph::printGraph(){
-    VERTEXID_LIST_ITERATOR i;
-    for(INT v=0; v <_numVertices; ++v){
+    int64_t_LIST_ITERATOR i;
+    for(int64_t v=0; v <_numVertices; ++v){
       std::cout << std::endl << v << "-> ";
       for (i = _adjList[v].begin(); i != _adjList[v].end(); ++i) {
 	std::cout << *i << " ";
@@ -165,9 +165,11 @@ namespace supbub {
   //////////////////////// private ////////////////////////
 
 
+  //TODO this may require an int64_t as the final pointer.
+  // it seems to be causing compiler errors
   void 
-  Graph::findScc(INT u, INT* disc, INT* low, std::stack<INT> *st,
-		 bool* stacked, INT& tick, INT& currentScc, INT* scc) {
+  Graph::findScc(int64_t u, int64_t* disc, int64_t* low, std::stack<int64_t> *st,
+		 bool* stacked, int64_t& tick, int64_t& currentScc, int64_t* scc) {
  
     // Initialize discovery time and low value
     disc[u] = low[u] = ++tick;
@@ -175,9 +177,9 @@ namespace supbub {
     stacked[u] = true;
  
     // Go through all vertices adjacent to this
-    VERTEXID_LIST_ITERATOR i;
+    int64_t_LIST_ITERATOR i;
     for (i = _adjList[u].begin(); i != _adjList[u].end(); ++i) {
-      INT v = *i;  // v is current adjacent of 'u'
+      int64_t v = *i;  // v is current adjacent of 'u'
       // If v is not visited yet, then recur for it
       if (disc[v] == 0) {
 	findScc(v, disc, low, st, stacked, tick, currentScc, scc);
@@ -196,9 +198,9 @@ namespace supbub {
     }
  
     // root vertex found, pop the stack and print an SCC
-    INT sizeOfSCC = 0;
+    int64_t sizeOfSCC = 0;
     if (low[u] == disc[u]) {
-      INT w;
+      int64_t w;
        do {
 	w = st->top();
 	stacked[w] = false;

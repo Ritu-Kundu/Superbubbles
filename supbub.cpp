@@ -42,14 +42,14 @@ int main(int argc, char **argv){
     return 1;
   }
   // First line of the file contains number odf vertices
-  INT numVertices;
+  int64_t numVertices;
   infile >> numVertices;
   Graph graph(numVertices);
 
   // File contains edges such that
   //  - new line as separator between edges
   //  - space/tab a separator between vertices of an edge
-  INT u, v;
+  int64_t u, v;
   while (infile >> u >> v) {
     // add egde in the graph
     graph.addEdge(u, v);

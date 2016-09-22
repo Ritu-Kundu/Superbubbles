@@ -50,8 +50,8 @@ namespace supbub{
 
     /** struct for a superbubble */
     struct SuperBubble{
-      VERTEXID entrance; // id of entrance vertex
-      VERTEXID exit; // id of exit vertex
+      int64_t entrance; // id of entrance vertex
+      int64_t exit; // id of exit vertex
     };
 
     /** type for list of superbubbles */
@@ -83,7 +83,7 @@ namespace supbub{
      * @param superBubblesArray pointer to the array of superbubbles in which result is to be returned.
      */
     void 
-    superBubble(DAG* dag, VERTEXID* superBubblesArray);
+    superBubble(DAG* dag, int64_t* superBubblesArray);
     
     /** Reports the superbubbles ending at the given exit candidate along with the nested superbubbles between the given entrance and exit candidates.
      *
@@ -98,7 +98,7 @@ namespace supbub{
      * @param superBubblesArray pointer to the array of superbubbles in which result is to be returned.
      */
      void 
-     reportSuperBubble(DAG* dag, INT* mark, Candidate* start, Candidate* exit, VERTEXID* superBubblesArray);
+     reportSuperBubble(DAG* dag, int64_t* mark, Candidate* start, Candidate* exit, int64_t* superBubblesArray);
 
     /** Validates the superbubbles starting and ending at the vertices corresponding to the given entrance and exit candidates.If not returns the alternative entrance candidate.
      *

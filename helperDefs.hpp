@@ -33,9 +33,9 @@ void usage (void);
 int decodeFlags(int argc, char* argv [], struct InputFlags* flags);
 double gettime(void);
 
-void log(std::string s, INT x);
+void log(std::string s, int64_t x);
 
-void log(std::string s, INT x, INT y);
+void log(std::string s, int64_t x, int64_t y);
 
 } // end namespace
 

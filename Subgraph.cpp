@@ -19,9 +19,9 @@
 
 namespace supbub{
 
-  Subgraph::Subgraph(INT n):Graph(n) {
+  Subgraph::Subgraph(int64_t n):Graph(n) {
     //super();
-    _reverseMapId = new INT[_numVertices];
+    _reverseMapId = new int64_t[_numVertices];
     std::fill_n(_reverseMapId, _numVertices, -1); // set to -1
     _offSet = n-2;
     _dag = nullptr;
@@ -39,8 +39,8 @@ namespace supbub{
     }
   }
 
-  VERTEXID
-  Subgraph::getGlobalId(VERTEXID v){
+  int64_t
+  Subgraph::getGlobalId(int64_t v){
     if (v < _numVertices && v >=0 ) {
       return _reverseMapId[v];
     } else {
@@ -50,7 +50,7 @@ namespace supbub{
   }
 
   void
-  Subgraph::setGlobalId(VERTEXID localId, VERTEXID globalId){
+  Subgraph::setGlobalId(int64_t localId, int64_t globalId){
     if (localId <_numVertices && localId >=0 ) { 
       _reverseMapId[localId] = globalId;
     } else {
@@ -58,18 +58,18 @@ namespace supbub{
     }
   }
 
-  VERTEXID
+  int64_t
   Subgraph::getSourceId(){
     return _numVertices-2; // second last vertex
   }
 
-  VERTEXID
+  int64_t
   Subgraph::getTerminalId(){
     return _numVertices-1; // last vertex
   }
 
-  VERTEXID
-  Subgraph::getDuplicateId(VERTEXID v){
+  int64_t
+  Subgraph::getDuplicateId(int64_t v){
     if (v < _numVertices && v >=0 ) {
       return v + _offSet;
     } else {
@@ -78,8 +78,8 @@ namespace supbub{
     }
   }
 
-  VERTEXID
-  Subgraph::getOriginalId(VERTEXID v){
+  int64_t
+  Subgraph::getOriginalId(int64_t v){
     if (v < 2*_offSet && v >= _offSet ) {
       return v - _offSet;
     } else {
@@ -89,7 +89,7 @@ namespace supbub{
   }
 
   bool
-  Subgraph::isDuplicateId(VERTEXID v){
+  Subgraph::isDuplicateId(int64_t v){
    if (v < _numVertices && v >=0 ) {
      return !(v < _offSet);
     } else {
@@ -99,7 +99,7 @@ namespace supbub{
   }
 
   bool
-  Subgraph::isAncestor(VERTEXID anc, VERTEXID des){
+  Subgraph::isAncestor(int64_t anc, int64_t des){
     if (anc < _numVertices && anc >=0 && des < _numVertices && des > 0) {
       if (_dag != nullptr) {
 	return (_discovery[des] > _discovery[anc] && _finish[des] < _finish[anc]);
@@ -113,7 +113,7 @@ namespace supbub{
     }
   }
 
-  INT Subgraph::getOffset(){
+  int64_t Subgraph::getOffset(){
     return _offSet;
   }
 
@@ -121,13 +121,13 @@ namespace supbub{
   DAG*
   Subgraph::getDAG(){
     _dag = new DAG(2*_offSet + 2);
-    _discovery = new INT[_numVertices];
-    _finish = new INT[_numVertices];
-    VERTEXID_LIST_ITERATOR i;
-    VERTEXID newSource = _dag->getSourceId();
-    VERTEXID thisSource = getSourceId();
-    VERTEXID newTerminal = _dag->getTerminalId();
-    VERTEXID thisTerminal = getTerminalId();
+    _discovery = new int64_t[_numVertices];
+    _finish = new int64_t[_numVertices];
+    int64_t_LIST_ITERATOR i;
+    int64_t newSource = _dag->getSourceId();
+    int64_t thisSource = getSourceId();
+    int64_t newTerminal = _dag->getTerminalId();
+    int64_t thisTerminal = getTerminalId();
 
     
     /* Add {(r, v' ) | (r, v) ∈ E(G)} */
@@ -149,7 +149,7 @@ namespace supbub{
     }
 
     /* Add {(u', v'), (u'', v'') |(u, v) ∈ E(G), (u, v) is not a back edge } and {(u', v'') | (u, v) ∈ E(G), (u, v) is a back edge} */
-    VERTEXID source = thisSource;
+    int64_t source = thisSource;
     if (_outDegree[thisSource] == 0) { // no source r, select a random vertex to be source/root
       source = 0; // 0 is chosen
     }
@@ -158,16 +158,16 @@ namespace supbub{
     DFSVisit(source, 0, color);
 
     /* Adjust source and terminal vertices */
-    VERTEXID lastDAGID = _dag->numVertices()-2;
+    int64_t lastDAGID = _dag->numVertices()-2;
     if (_outDegree[thisSource] == 0) { // G does not contain r
-      for (VERTEXID u=0; u < lastDAGID; ++u) {
+      for (int64_t u=0; u < lastDAGID; ++u) {
 	if (_dag->getInDegree(u) == 0) { // for every u ∈ V (G ) such that u has no incoming edge in G'
 	  _dag->addEdge(newSource, u);//create an edge (r, u)
 	}
       }
     }
     if (_inDegree[thisTerminal] == 0) { // G does not contain r'
-      for (VERTEXID u=0; u < lastDAGID; ++u) {
+      for (int64_t u=0; u < lastDAGID; ++u) {
 	if (_dag->getOutDegree(u) == 0) { // for every u ∈ V (G ) such that u has no outgoing edge in G'
 	  _dag->addEdge(u, newTerminal);//create an edge (u, r')
 	}
@@ -184,15 +184,15 @@ namespace supbub{
 
 
   void
-  Subgraph::DFSVisit(VERTEXID u, INT tick, Subgraph::Color* color){
+  Subgraph::DFSVisit(int64_t u, int64_t tick, Subgraph::Color* color){
     color[u] = GRAY;
     _discovery[u] = ++tick;
-    VERTEXID_LIST_ITERATOR i;
-    VERTEXID thisSource = getSourceId();
-    VERTEXID thisTERMINAL = getTerminalId();
+    int64_t_LIST_ITERATOR i;
+    int64_t thisSource = getSourceId();
+    int64_t thisTERMINAL = getTerminalId();
     if (! _adjList[u].empty()) {
       for (i = _adjList[u].begin(); i != _adjList[u].end(); ++i) {	
-	VERTEXID v = *i;
+	int64_t v = *i;
 	if (color[v] == WHITE){ // u-v is tree-edge
 	  if (v != thisTERMINAL && u!= thisTERMINAL && v!=thisSource && u!=thisSource) {
 	    _dag->addEdge(u, v); // add u'-v'
