@@ -180,7 +180,7 @@ namespace supbub{
      * @param color Pointer to an array marking colors of the vertices to keep track of unvisited(WHITE), visited but not finished(GRAY) and finished(BLACK) vertices.
      *
      */   
-    void DFSVisit(int64_t u, int64_t tick, Color* color);
+    void DFSVisit(int64_t u, int64_t& tick, Color* color);
   
 
  
