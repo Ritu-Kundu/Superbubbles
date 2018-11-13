@@ -184,7 +184,7 @@ namespace supbub{
 
 
   void
-  Subgraph::DFSVisit(int64_t u, int64_t tick, Subgraph::Color* color){
+  Subgraph::DFSVisit(int64_t u, int64_t& tick, Subgraph::Color* color){
     color[u] = GRAY;
     _discovery[u] = ++tick;
     int64_t_LIST_ITERATOR i;
